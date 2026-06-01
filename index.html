@@ -72,13 +72,14 @@
         }
 
         /* ==========================================
-           [2단계] 게임 타이틀 표지 (cover_4.png 배경 적용)
+           [2단계] 게임 타이틀 표지 배경 (first/images/ 폴더 반영)
         ========================================== */
         #titleScreen {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85)), url('cover_4.png');
+            /* 표지 이미지 경로를 first/images/cover.png 로 잡아두었습니다 */
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85)), url('first/images/cover.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -271,13 +272,13 @@
         .timeline-node:hover .node-circle { transform: scale(1.1); border-color: #000; }
 
         /* ==========================================
-           [3단계] 인게임 인터페이스 구조 (컴퓨터 화면 전체 확대형)
+           [3단계] 인게임 인터페이스 구조 (전체화면형)
         ========================================== */
         #mainGameWrapper {
             display: none;
             opacity: 0;
             transition: opacity 0.6s ease;
-            width: 96vw; /* 고정 크기 제거, 컴퓨터 해상도 좌우로 확장 */
+            width: 96vw;
             max-width: 1800px;
             margin: 20px auto;
             position: relative;
@@ -293,7 +294,6 @@
         #bloodCanvas { z-index: 1; }
         #cyberGlitchCanvas { z-index: 2; display: none; }
 
-        /* 상단 모니터 상태 표시 패널 확장 */
         .system-dashboard {
             background: rgba(10, 10, 12, 0.9);
             border: 1px solid #222;
@@ -305,22 +305,21 @@
             align-items: center;
             box-shadow: 0 8px 30px rgba(0,0,0,0.8);
         }
-        .stat-group { display: flex; gap: 40px; } /* 대시보드 스탯 간격 확장 */
+        .stat-group { display: flex; gap: 40px; }
         .stat-item { display: flex; flex-direction: column; }
         .stat-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
         .stat-value { font-family: monospace; font-size: 20px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
-        /* 하단 서류철 게임 창 레이아웃 - 좌우 전체 화면 확장 */
         .game-container {
             background-color: var(--paper-bg);
             border-radius: 2px;
             box-shadow: 0 0 50px rgba(0,0,0,0.9), inset 0 0 80px rgba(0,0,0,0.2);
-            padding: 60px 80px; /* 내부 여백도 시원하게 조율 */
+            padding: 60px 80px;
             box-sizing: border-box;
             position: relative;
             border: 1px solid #bdae8a;
-            min-height: 80vh; /* 화면에 꽉 차는 높이 유도 */
+            min-height: 80vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -339,10 +338,28 @@
         
         .environment-box { background: rgba(0, 0, 0, 0.04); border-left: 4px solid #7a6e55; padding: 15px 25px; margin-bottom: 30px; font-size: 15px; line-height: 1.7; color: #4a4235; }
         
-        /* 단서 파일 영역 좌우 가로 배치 최적화 */
+        /* 단서 파일/캐릭터 아바타 영역 */
         .visual-area { display: flex; justify-content: center; gap: 60px; margin: 35px 0; min-height: 180px; align-items: center; }
         .character-node { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.8s ease forwards; }
-        .avatar-frame { width: 130px; height: 130px; border: 1px solid #7a6e55; background-color: rgba(0,0,0,0.05); display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 12px; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
+        
+        .avatar-frame { 
+            width: 130px; 
+            height: 130px; 
+            border: 1px solid #7a6e55; 
+            background-color: rgba(0,0,0,0.05); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+            margin-bottom: 12px; 
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         .avatar-frame::after { content: ''; position: absolute; width: 6px; height: 6px; border-top: 1px solid var(--stamp-red); border-left: 1px solid var(--stamp-red); top: 4px; left: 4px; }
         .char-name { font-size: 14px; font-weight: bold; color: var(--ink-black); border-bottom: 1px dashed #7a6e55; padding-bottom: 2px; }
 
@@ -352,7 +369,6 @@
         .dialogue-line { margin-bottom: 16px; }
         .speaker { font-weight: 700; color: var(--stamp-red); margin-right: 10px; }
 
-        /* 하단 수사 선택 버튼 전체 넓게 배치 */
         .choices-box { display: flex; flex-direction: column; gap: 14px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px; }
         .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 18px 25px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 16px; color: var(--ink-black); cursor: pointer; transition: all 0.3s ease; position: relative; background-color: rgba(255,255,255,0.2); }
         .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); padding-left: 35px; }
@@ -468,6 +484,17 @@
     </div>
 
     <script>
+        /* =========================================================================
+           ★ 상대 경로 설정 (알려주신 first/images/ 폴더 내부 매핑)
+           ※ 파일 확장자가 jpg라면 아래 .png를 .jpg로 한꺼번에 바꿔주세요!
+        ========================================================================= */
+        const characterImages = {
+            solider: "first/images/solider.png",   // 주인공 솔저 이미지 경로
+            bable: "first/images/bable.png",       // 기업 바벨 이미지 경로
+            old_jack: "first/images/old_jack.png", // 조력자 올드잭 이미지 경로
+            princess: "first/images/princess.png"  // 공주들 이미지 경로
+        };
+
         const storyData = {
             S1: {
                 id: "🎬 서막", title: "바벨의 그림자", meta: "바벨 코프 본사 120층 최고급 펜트하우스",
@@ -528,7 +555,7 @@
                 characters: ["solider", "old_jack"],
                 script: [
                     { type: "SYSTEM ALERT", text: "경고: 비인가 세션 감지. 자아 시퀀스 포맷을 시작합니다." },
-                    { type: "dialogue", speaker: "올드 잭", text: "야, 이 미친놈아! 하마터면 전두엽이 통째로 구워질 뻔했다고! 프로토콜 제대로 다시 세팅해!" }
+                    { type: "dialogue", speaker: "old_jack", text: "야, 이 미친놈아! 하마터면 전두엽이 통째로 구워질 뻔했다고! 프로토콜 제대로 다시 세팅해!" }
                 ],
                 choices: [
                     { text: "타들어 가는 피질을 부여잡고, 현실에서 재링크를 시도한다.", next: "S3", modifiers: { memory: -15 } }
@@ -582,7 +609,7 @@
             },
             END_A: {
                 id: "🏆 TRUE ENDING", title: "도시의 해방", meta: "현실의 지하 정비소 -> 네오 코리아 전역",
-                environment: "도시 전체를 뒤덮은 황금빛และ시안 블루의 데이터 해방 전류.",
+                environment: "도시 전체를 뒤덮은 황금빛과 시안 블루의 데이터 해방 전류.",
                 characters: ["solider", "old_jack"],
                 script: [
                     { type: "dialogue", speaker: "old_jack", text: "봐라, 창밖 구룡 지구와 마천루의 모든 전광판이 공주들의 비명과 추악한 실험 로그로 뒤덮지고 있어! 진실은 마침내 증명됐다!" }
@@ -731,8 +758,7 @@
                 if(glitchTime >= duration) { clearInterval(interval); glitchCtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height); glitchCanvas.style.display = 'none'; }
             }, 40);
         }
-
-        function updateDashboard() {
+function updateDashboard() {
             document.getElementById('statMemory').innerText = gameState.memory + "%";
             document.getElementById('statSync').innerText = gameState.sync + "%";
             document.getElementById('statCorruption').innerText = gameState.corruption + "%";
@@ -741,4 +767,92 @@
             document.getElementById('statNoise').innerText = gameState.noise + "%";
         }
 
-        function renderScene(scene
+        function renderScene(sceneKey) {
+            const scene = storyData[sceneKey];
+            if (!scene) return;
+
+            document.getElementById('sceneId').innerText = scene.id + ". " + scene.title;
+            document.getElementById('sceneMeta').innerText = scene.meta;
+            document.getElementById('environmentBox').innerText = scene.environment;
+
+            const visualArea = document.getElementById('visualArea');
+            visualArea.innerHTML = "";
+            scene.characters.forEach(char => {
+                const node = document.createElement('div'); node.className = "character-node";
+                const frame = document.createElement('div'); frame.className = "avatar-frame";
+                
+                // characterImages 매핑 객체에서 지정된 경로를 주입합니다.
+                const imgSrc = characterImages[char] || "first/images/solider.png";
+                frame.innerHTML = `<img src="${imgSrc}" alt="${char}" onerror="this.style.display='none'; this.parentNode.innerText='이미지 누락';">`;
+                
+                const nameLabel = document.createElement('span'); nameLabel.className = "char-name"; nameLabel.innerText = char.toUpperCase();
+                node.appendChild(frame); node.appendChild(nameLabel); visualArea.appendChild(node);
+            });
+
+            const scriptContent = document.getElementById('scriptContent');
+            scriptContent.innerHTML = "";
+            scene.script.forEach(paragraph => {
+                const block = document.createElement('div');
+                if (paragraph.type === "narration") { block.className = "narration"; block.innerText = paragraph.text; }
+                else if (paragraph.type === "dialogue") { block.className = "dialogue-line"; block.innerHTML = `<span class="speaker">* ${paragraph.speaker}:</span>"${paragraph.text}"`; }
+                else if (paragraph.type === "SYSTEM ALERT") { block.className = "dialogue-line"; block.innerHTML = `<span class="speaker" style="color:#ff0055;">[${paragraph.type}]:</span> ${paragraph.text}`; }
+                scriptContent.appendChild(block);
+            });
+
+            const choicesBox = document.getElementById('choicesBox');
+            choicesBox.innerHTML = "";
+            scene.choices.forEach(choice => {
+                const button = document.createElement('button'); button.className = "choice-btn"; button.innerText = choice.text;
+                button.onclick = () => handleChoice(choice); choicesBox.appendChild(button);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleChoice(choice) {
+            if (choice.modifiers) {
+                for (const [stat, val] of Object.entries(choice.modifiers)) { gameState[stat] = Math.max(0, gameState[stat] + val); }
+            }
+            let nextScene = choice.next;
+
+            if (nextScene === "CHECK_S4") { nextScene = (gameState.sync + gameState.integrity >= 120) ? "S5" : "S_LOOP"; }
+            if (nextScene === "CALCULATE_ENDING") {
+                const finalScore = Math.min(gameState.sync, gameState.integrity) * 0.7 - gameState.noise * 0.3;
+                if (finalScore >= 70) nextScene = "END_A";
+                else if (finalScore >= 50) nextScene = "END_B";
+                else nextScene = "G_OVER";
+            }
+
+            if (nextScene === "RESET") {
+                gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0, currentScene: "S1" };
+                document.getElementById('mainGameWrapper').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('mainGameWrapper').style.display = 'none';
+                    document.getElementById('titleScreen').style.display = 'flex';
+                    setTimeout(() => document.getElementById('titleScreen').style.opacity = '1', 50);
+                }, 600);
+                stopBloodEngine(); triggerCyberGlitch(300);
+                document.getElementById('nodeStatus').innerText = "STANDBY"; document.getElementById('nodeStatus').style.color = 'var(--point-blue)';
+                return;
+            }
+
+            gameState.currentScene = nextScene;
+            updateDashboard();
+
+            if (nextScene === "S_LOOP" || nextScene === "G_OVER") {
+                startBloodEngine(); triggerCyberGlitch(1000);
+                document.getElementById('nodeStatus').innerText = "ALERT_DEADLOCK"; document.getElementById('nodeStatus').style.color = '#ff0055';
+            } else if (nextScene.startsWith("END_")) {
+                stopBloodEngine(); triggerCyberGlitch(1200);
+                document.getElementById('nodeStatus').innerText = "COMPILE_SUCCESS"; document.getElementById('nodeStatus').style.color = '#00ffaa';
+            } else {
+                if (nextScene !== "S3") stopBloodEngine();
+                triggerCyberGlitch(500);
+            }
+
+            setTimeout(() => renderScene(nextScene), 150);
+        }
+
+        runSystemRecoveringSequence();
+    </script>
+</body>
+</html>
