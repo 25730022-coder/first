@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>UNLOGGED: 사라진 밤의 증명</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap');
+
+        :root {
+            --paper-bg: #d4c7a9;
+            --ink-black: #1a1714;
+            --point-blue: #00f2ff;
+            --stamp-red: #7a1212;
+            --neon-glow: 0 0 15px rgba(0, 242, 255, 0.9);
+            --spotlight-color: rgba(255, 240, 180, 0.1);
+        }
+
+        body {
+            background-color: #050505;
+            background-image: 
+                radial-gradient(circle at 50% 0%, var(--spotlight-color) 0%, transparent 70%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 25px 25px, 25px 25px;
+            color: var(--ink-black);
+            font-family: 'Nanum+Myeongjo', serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #bloodCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #cyberGlitchCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
+            pointer-events: none;
+            display: none;
+        }
+
+        .game-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 900px;
+            max-width: 95%;
+            margin: 40px auto;
+        }
+
+        .system-dashboard {
+            background: rgba(10, 10, 12, 0.85);
+            border: 1px solid #222;
+            padding: 15px 25px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.7);
+        }
+
+        .stat-group {
+            display: flex;
+            gap: 25px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #eee;
+            transition: color 0.5s ease;
+        }
+
+        .stat-value.neon-glow {
+            color: var(--point-blue);
+            text-shadow: var(--neon-glow);
+        }
+
+        .game-container {
+            background-color: var(--paper-bg);
+            border-radius: 2px;
+            box-shadow: 
+                0 0 40px rgba(0,0,0,0.8),
+                inset 0 0 60px rgba(0,0,0,0.15);
+            padding: 50px 60px;
+            box-sizing: border-box;
+            position: relative;
+            border: 1px solid #bdae8a;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 1px solid rgba(122, 18, 18, 0.15);
+            pointer-events: none;
+        }
+
+        .scene-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px solid var(--stamp-red);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .scene-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--stamp-red);
+            letter-spacing: -0.5px;
+        }
+
+        .scene-meta {
+            font-size: 13px;
+            font-style: italic;
+            color: #554e3f;
+        }
+
+        .environment-box {
+            background: rgba(0, 0, 0, 0.04);
+            border-left: 3px solid #7a6e55;
+            padding: 12px 18px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4a4235;
+        }
+
+        .visual-area {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            min-height: 160px;
+            align-items: center;
+        }
+
+        .character-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .avatar-frame {
+            width: 110px;
+            height: 110px;
+            border: 1px solid #7a6e55;
+            background-color: rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        .avatar-frame::after {
+            content: '';
+            position: absolute;
+            width: 6px; height: 6px;
+            border-top: 1px solid var(--stamp-red);
+            border-left: 1px solid var(--stamp-red);
+            top: 4px; left: 4px;
+        }
+
+        .avatar-img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            opacity: 0.85;
+            filter: sepia(0.3) grayscale(0.2);
+        }
+
+        .char-name {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--ink-black);
+            border-bottom: 1px dashed #7a6e55;
+            padding-bottom: 2px;
+        }
+
+        .script-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--ink-black);
+            margin-bottom: 35px;
+            min-height: 120px;
+        }
+
+        .narration {
+            font-style: italic;
+            color: #4a4235;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .narration::before {
+            content: '■';
+            position: absolute;
+            left: 0;
+            color: var(--stamp-red);
+            font-size: 10px;
+            top: 2px;
+        }
+
+        .dialogue-line {
+            margin-bottom: 14px;
+        }
+
+        .speaker {
+            font-weight: 700;
+            color: var(--stamp-red);
+            margin-right: 8px;
+        }
+
+        .choices-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 25px;
+        }
+
+        .choice-btn {
+            background: none;
+            border: 1px solid #9c8e6f;
+            padding: 14px 20px;
+            text-align: left;
+            font-family: 'Nanum+Myeongjo', serif;
+            font-size: 15px;
+            color: var(--ink-black);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .choice-btn:hover {
+            background-color: var(--ink-black);
+            color: var(--paper-bg);
+            border-color: var(--ink-black);
+            padding-left: 28px;
+        }
+
+        .choice-btn::before {
+            content: '☞';
+            position: absolute;
+            left: -10px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .choice-btn:hover::before {
+            left: 12px;
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bloodCanvas"></canvas>
+    <canvas id="cyberGlitchCanvas"></canvas>
+
+    <div class="game-wrapper">
+        <div class="system-dashboard">
+            <div class="stat-group">
+                <div class="stat-item">
+                    <span class="stat-label">Memory</span>
+                    <span id="statMemory" class="stat-value">100%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Sync</span>
+                    <span id="statSync" class="stat-value">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Corruption</span>
+                    <span id="statCorruption" class="stat-value">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Credit</span>
+                    <span id="statCredit" class="stat-value">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Integrity</span>
+                    <span id="statIntegrity" class="stat-value">0%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Noise</span>
+                    <span id="statNoise" class="stat-value">0%</span>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label" style="text-align:right;">Node System</span>
+                <span id="nodeStatus" class="stat-value neon-glow">STANDBY</span>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <div class="scene-header">
+                <span id="sceneId" class="scene-title">S1. 오프닝</span>
+                <span id="sceneMeta" class="scene-meta">바벨 코프 본사</span>
+            </div>
+
+            <div id="environmentBox" class="environment-box">
+                환경 정보가 로드되는 중입니다...
+            </div>
+
+            <div id="visualArea" class="visual-area"></div>
+
+            <div id="scriptContent" class="script-content">
+                시나리오 텍스트가 로드되는 중입니다...
+            </div>
+
+            <div id="choicesBox" class="choices-box"></div>
+        </div>
+    </div>
+
+    <script>
+        const storyData = {
+            S1: {
+                id: "🎬 S1",
+                title: "오프닝: 바벨의 그림자",
+                meta: "바벨 코프 본사 120층 최고급 펜트하우스",
+                environment: "바벨 코프 본사 120층 최고급 펜트하우스 내부. 흑색 대리석 바닥, 통창 너머 글자나 간판이 없는 밤의 마천루 야경, 창문에 흘러내리는 산성비.",
+                characters: ["solider", "bable"],
+                script: [
+                    { type: "narration", text: "솔저는 관자놀이에 박힌 신경 링크 단자를 가죽 장갑 낀 손으로 거칠게 쓸어내린다. 푸르스름한 광축이 뿜어져 나오며 바벨의 홀로그램 실루엣이 나타난다. 바벨은 최고급 검은 정장을 입고 금색 지팡이를 짚은 채 단호한 표정으로 서 있다." },
+                    { type: "dialogue", speaker: "바벨", text: "자네의 그 텅 빈 머릿속을 채워줄 기억 소스가 어디에 저장되어 있는지 아직도 못 찾았나 보군, 솔저. 내 제안을 거절하기엔 자네에게 남은 시간이 그리 많지 않을 텐데? 내 지시만 따른다면 그 기억을 돌려받는 것은 시간문제다." },
+                    { type: "dialogue", speaker: "솔저", text: "용건만 말해, 바벨. 내 기억을 지운 게 당신들이든 아니든, 난 대가만 분명하다면 움직인다. 이번엔 누구의 목을 따오거나 어떤 데이터를 훔쳐 오면 되지? 내 가죽 장갑이 더 더러워져도 상관없다." },
+                    { type: "dialogue", speaker: "바벨", text: "공주들이 사라졌다. 내 단순한 핏줄들이 아니야. 에덴 서버의 방대한 연산 인프라를 지탱하고 제어하는 핵심 마인드 코어 그 자체지. 그 아이들의 연산이 멈추는 순간, 이 네오-코리아 전체의 데이터 흐름이 마비된다. 자네가 어떤 추악한 수단을 쓰든 나는 묻지 않겠다. 흔적을 남기지 말고 철저하게 수사해서 코어를 회수해라. 성공한다면 자네의 잃어버린 원본 인격 데이터를 완벽하게 복원해 주지. 거대 기업의 사활이 걸린 극비 수사다. 이제 자네 손끝에 모든 진실이 쥐어졌다. 당장 하층부로 내려가 흔적을 쫓아라." },
+                    { type: "narration", text: "솔저의 뒷목 붉은 데이터 소켓이 번쩍이며 미션 패킷을 수신한다." }
+                ],
+                choices: [
+                    { text: "기업의 지시대로 공식 수사 플러그인을 가동한다.", next: "S2", modifiers: { credit: 15 } },
+                    { text: "독자적인 기억 흔적 역추적 코드를 심어 불법 해킹 성향으로 접근한다.", next: "S2", modifiers: { corruption: 10 } }
+                ]
+            },
+            S2: {
+                id: "🎬 S2",
+                title: "이동: 하층 지구로의 추락",
+                meta: "초고속 관형 마그네틱 리프트 -> 구룡 지구 골목",
+                environment: "상층부와 하층 지구를 연결하는 초고속 관형 마그네틱 리프트 안, 그리고 이어지는 구룡 지구 하층 가로등 골목. 사방을 짓누르는 거친 네온사인 조명과 고여 있는 오염된 빗물 웅덩이.",
+                characters: ["solider"],
+                script: [
+                    { type: "narration", text: "솔저는 바벨의 펜트하우스를 나와 수직으로 하강하는 리프트에 몸을 싣는다. 계급의 경계를 넘어가듯 기압차가 심해지자 침을 삼키며, 낡은 가죽 코트 깃을 올린다. 리프트가 하층 지구 정거장에 거칠게 멈춰 서고, 솔저는 산성비가 쏟아지는 구룡 지구의 음침한 뒷골목으로 걸어 나와, 빗물이 고인 웅덩이를 밟으며 어두운 지하 통로 계단 아래로 깊숙이 내려간다." },
+                    { type: "dialogue", speaker: "솔저", text: "상층부의 가짜 인공 산소 냄새는 10초 만에 끝나는군. 리프트가 아래로 처박힐 때마다 시야가 어두워지고 차가운 매연 냄새가 진동을 해. 바벨이 준 암호화 칩…… 겨우 이 족쇄 같은 장치 하나 때문에 내가 다시 이 썩어빠진 하층 구역 골목으로 발을 디뎌야 한다니." },
+                    { type: "dialogue", speaker: "리프트 안내 음성", text: "하층 제한 구역인 구룡 지구 정거장에 도착했습니다. 방독면 착용을 권장하며, 기업 자산에 대한 모든 범죄 행위는 실시간 추적됩니다." },
+                    { type: "dialogue", speaker: "솔저", text: "추적할 테면 해보라지. 빗물에 네온 불빛이 핏빛처럼 반사되는군. 진실을 캐내려면 법 따위는 잊어야 해. 골목 끝, 저 낡은 셔터 아래 지하 계단으로 내려가면 그 늙은 영감이 살아있겠지. 발걸음을 서둘러야겠어." }
+                ],
+                choices: [
+                    { text: "리프트 제어반을 역해킹하여 고스트(Ghost) 모드로 은밀히 침투한다.", next: "S3", modifiers: { sync: 20, noise: 10 } },
+                    { text: "가죽 코트 안의 권총 케이스를 움켜쥐고 경비 노드를 파괴하며 물리 침투를 강행한다.", next: "S3", modifiers: { noise: 35, memory: -10 } }
+                ]
+            },
+            S3: {
+                id: "🎬 S3",
+                title: "거래: 구룡 지구의 낡은 조력자",
+                meta: "올드 잭의 지하 정비소 겸 비밀 안가",
+                environment: "구룡 지구 최하층 구역, 지하 통로 끝에 숨겨진 올드 잭의 지하 정비소 겸 비밀 안가. 깜빡이는 구형 형광등, 해체된 드론 잔해와 녹슨 기판들이 가득한 밀폐된 공간.",
+                characters: ["solider", "old_jack"],
+                script: [
+                    { type: "narration", text: "어두운 지하 계단을 내려온 솔저가 먼지를 털며 굳게 닫힌 철문을 밀고 들어선다. 기름때 절은 캔버스 앞치마를 두른 올드 잭이 철제 의자에 깊숙이 앉아 다가오는 솔저를 노려본다. 솔저가 가상의 테이블 위에 바벨의 암호화 데이터 칩을 거칠게 탁 던진다." },
+                    { type: "dialogue", speaker: "올드 잭", text: "바벨의 사냥개가 되기로 한 건가, 솔저? 아니면 기억을 잃더니 드디어 완전히 미쳐버린 건가? 여기까지 숨 가쁘게 기어 내려온 걸 보니, 대단한 뼈다귀라도 물어온 모양이군. 이 칩에 담긴 보안 프로토콜은 에덴 서버의 심장부로 들어가는 직통 티켓이야. 무작정 들어가면 네 뇌세포가 통째로 구워질 수도 있다고. 세상에 공짜는 없어. 내 다이브 장비와 리스크를 빌려주는 대가로 넌 내게 뭘 줄 건가?" },
+                    { type: "dialogue", speaker: "솔저", text: "수사 과정에서 확보할 에덴 서버 최심부의 '원본 소스코드' 복사본 전량을 넘기지. 네가 그토록 갈망하던 거다, 잭. 너라면 바벨 코프 보안팀 눈을 피해 하층민들의 차단된 코드를 해방하고 네 복수를 완성하는 데 쓸 수 있겠지. 난 내 기억만 찾으면 그만이다." },
+                    { type: "dialogue", speaker: "올드 잭", text: "그거라면 확실한 딜(Deal)이 되겠군. 내 10년 동안의 튜닝작인 아날로그 주파수 변조 패드와 최고급 마인드 싱크 증폭 포트를 주지. 에덴의 딥 스캔 필터를 상쇄할 수 있는 유일한 물건이다. 하지만 명심해. 안에서 네 노이즈(Noise) 수치를 통제하지 못하면, 이 포트가 과열돼서 네 관자놀이부터 타들어 갈 거다. 안에서 무슨 진실을 보든 흔들리지 마라. 탈출 루트를 항상 확보해." },
+                    { type: "narration", text: "올드 잭이 주황색 보안 레이어가 켜진 패드를 넘기고 진짜 인간 손으로 솔저의 어깨를 묵직하게 쥐며 거래를 성립시킨다. 솔저가 낡은 다이브 체어에 누워 단자를 연결한다." }
+                ],
+                choices: [
+                    { text: "올드 잭과의 계약을 정직하게 수락하고, 소스코드 원본 무결성을 보장한다.", next: "S4", modifiers: { integrity: 20, corruption: -15 } },
+                    { text: "칩의 보안 프로토콜을 변조하여 원본 소스코드를 은폐하고 사기 거래를 시도한다.", next: "S4", modifiers: { corruption: 25, integrity: -20 } }
+                ]
+            },
+            S4: {
+                id: "🎬 S4",
+                title: "진입: 가상 에덴의 장막",
+                meta: "에덴 중앙 서버 데이터 게이트 앞",
+                environment: "에덴 중앙 서버 입구, 거대한 데이터 게이트 앞. 검은 매트릭스 공간과 시안 블루빛 회로 성벽. 방화벽 경고음이 피질을 직접 찌른다.",
+                characters: ["solider"],
+                script: [
+                    { type: "narration", text: "시안 블루 회로들이 일제히 핏빛 선홍색으로 반전되며 시스템 딥 스캔이 시작된다. 솔저는 숨이 턱 막히는 압박감에 오한을 느끼며, 허공의 주황색 경고 창들을 한손으로 거칠게 밀어내고 터미널의 주파수 다이얼을 빠르게 돌려 필터를 교란한다." },
+                    { type: "dialogue", speaker: "솔저", text: "크윽……! 가상 공간 진입과 동시에 게이트 방화벽이 내 뇌 피질을 직접 찢어발기는 기분이군. 시스템 전체가 내 아키텍처를 강제로 실시간 연산하고 있어. 현실 정비소에 있는 올드 잭의 장비가 버텨줘야 할 텐데…… 주황색 경고 창들이 끊임없이 시야를 가린다." },
+                    { type: "dialogue", speaker: "SYSTEM ALERT", text: "외부 세션 무단 접근 감지. 보안 필터 프로토콜 4단계 가동. 인가되지 않은 모든 엔드포인트의 데이터 감도를 강제 전수 조사합니다. 위반 노드가 감지되면 즉시 뇌세포 격리 및 포맷 조치를 집행합니다." },
+                    { type: "dialogue", speaker: "솔저", text: "개소리 마라, 기계 덩어리 자식들. 겨우 이 정도 압박감에 주저앉을 줄 알았나? 올드 잭과 거래한 보람이 있어야지. 아날로그 변조 주파수를 4.2헤르츠로 강제 고정한다. 기계적 노이즈를 발생시켜 필터를 교란하고 게이트의 틈새를 강제로 찢어발겨 주지!" }
+                ],
+                choices: [
+                    { text: "패드의 주파수를 변조해 방화벽 필터를 우회 교란한다.", next: "CHECK_S4" },
+                    { text: "바벨 코프의 마스터 보안 코드를 밀어 넣어 정면 돌파를 시도한다.", next: "S_LOOP" }
+                ]
+            },
+            S_LOOP: {
+                id: "🔄 LOOP SYSTEM",
+                title: "시스템 데드락 / 루프 장치",
+                meta: "서버 역전류 오작동 -> 현실 강제 회귀",
+                environment: "보안 프로토콜 오작동으로 관자놀이가 타들어 가며 의식이 튕겨 나간다. 올드 잭이 긴급 제동 레버를 당겨 간신히 자아 포맷을 막아낸다.",
+                characters: ["solider", "old_jack"],
+                script: [
+                    { type: "dialogue", speaker: "SYSTEM ALERT", text: "경고: 비인가 세션 감지. 자아 시퀀스 포맷을 시작합니다." },
+                    { type: "narration", text: "가상 에덴의 방화벽 레이저가 솔저의 영혼을 절단하듯 쏟아진다. 관자놀이 소켓에서 진짜 탄내가 나며 솔저가 피를 토하는 순간, 현실의 올드 잭이 정비소의 긴급 제동 레버를 온 힘을 다해 당긴다. 강렬한 화이트아웃과 함께 솔저의 의식이 현실의 다이브 체어로 튕겨 나간다." },
+                    { type: "dialogue", speaker: "올드 잭", text: "야, 이 미친놈아! 하마터면 전두엽이 통째로 구워져서 가디언 로봇 신세가 될 뻔했다고! 내 장비 장난감 아니니까 프로토콜 제대로 다시 세팅해!" }
+                ],
+                choices: [
+                    { text: "타들어 가는 피질을 부여잡고, 패드를 다시 정비하여 현실에서 재링크를 시도한다.", next: "S3", modifiers: { memory: -15 } }
+                ]
+            },
+            S5: {
+                id: "🎬 S5",
+                title: "조우: 부서진 영혼의 데이터",
+                meta: "격리벽 안쪽 순수한 무(無)의 공간",
+                environment: "격리벽 안쪽, 순수한 무(無)의 공간. 중력을 잃고 부유하는 깨진 거울 조각 같은 데이터 파편들. 소녀의 울음소리가 메아리친다.",
+                characters: ["solider", "princess"],
+                script: [
+                    { type: "narration", text: "파편 속에 공주들의 일그러진 얼굴 잔상이 파르르 떨린다. 솔저는 뇌를 찌르는 고통에 신음하며 뒤로 물러서고, 부유하는 파편들이 결합해 형성된 공주들의 가상 인격 형상이 솔저를 향해 애처롭게 손을 뻗다 노이즈로 바스러진다." },
+                    { type: "dialogue", speaker: "솔저", text: "이 부유하는 데이터 조각들은 대체 뭐지……? 손끝이 닿을 때마다 난수 코드가 아니라 얼음송곳으로 뇌를 찌르는 것 같은 생생한 인간의 고통이 밀려와. 이건 차가운 기계 코어가 아니야. 한 인간의 영혼이 강제로 업로드되는 과정에서 찢겨나간 날것의 기억 조각들이잖아!" },
+                    { type: "공주들의 부서진 의식", speaker: "공주들", text: "아버지…… 왜 우릴 차가운 기계의 부품으로 만든 건가요? 에덴을 지탱하라는 명목하에, 우리는 매일 밤 이 지옥 같은 서버 속에서 영혼이 불타오르고 있어요. 제발…… 이 고통스러운 무한 연산 루프를 멈춰줘요. 우리를 이 안개 속에서 꺼내주세요……!" },
+                    { type: "dialogue", speaker: "솔저", text: "바벨 코프 이 개자식들…… 에덴의 연산 성능을 올리려고 제 친딸들의 영혼을 시스템 코어에 통째로 갈아 넣은 거였군. 이 가련한 아이들의 형상이 내 눈앞에서 노이즈로 바스러지고 있어. 올드 잭이 말한 복수의 이유가 이거였나. 공중에 떠다니는 이 추악한 실험 로그 원본을 절대 놓치지 않겠다. 반드시 내 패드에 백업해 가겠어." }
+                ],
+                choices: [
+                    { text: "위험을 감수하고 내 전두엽을 개방해 공주들의 영혼 코어와 마인드 링크 동기화를 감행한다.", next: "S6", modifiers: { sync: 20, memory: -10 } },
+                    { text: "리스크를 피해 공주들의 영혼 코어를 격리하고, 바벨에게 제출할 실험 로그 데이터만 안전하게 백업한다.", next: "S6", modifiers: { credit: 20, integrity: -10 } }
+                ]
+            },
+            S6: {
+                id: "🎬 S6",
+                title: "관문: 역추적의 공포",
+                meta: "가상 제어 회랑",
+                environment: "데이터 변형 구역, 가상 제어 회랑. 사방의 격자무늬 가상 벽면이 조여들고, 공중에서 수많은 붉은색 광학 렌즈 모양 추적 엔진들이 일제히 개안한다.",
+                characters: ["solider"],
+                script: [
+                    { type: "narration", text: "솔저는 역전류 피드백으로 눈앞의 시야가 오색 픽셀로 깨어지자 가상 바닥에 한쪽 무릎을 꿇는다. 그는 이를 악문 채 튜닝 패드에 방어 알고리즘 코드를 수동으로 다급하게 입력하며 몰려드는 붉은 렌즈들을 차단하려 발악한다." },
+                    { type: "dialogue", speaker: "솔저", text: "헉…… 윽……! 사방의 격자 벽면들이 가상 생명체처럼 조여들며 나를 압박해 오고 있어. 공중에 개안한 저 붉은 광학 렌즈 놈들이 내 위치 좌표를 완전히 특정했군. 가상 역전류 피드백 때문에 시야가 온통 깨져나가!" },
+                    { type: "ALERT ENGINE", speaker: "ALERT ENGINE", text: "침입자 세션 역추적 70% 완료. 실시간 무결성 훼손 수치 및 노이즈 볼륨을 연산하여 물리적 위치를 산출합니다. 방어 매트릭스 작동 불가. 올드 잭의 지하 안가 좌표가 노출되기 일보 직전입니다." },
+                    { type: "dialogue", speaker: "솔저", text: "잭의 안가까지 위험해진다고? 내 관자놀이 하드웨어 장치에서 진짜로 탄내가 나는 것 같군. 역추적 필터가 내 현실의 뇌와 잭의 시스템까지 통째로 구워버리려 해. 여기서 주저앉으면 거래고 뭐고 다 끝장이다. 이를 악물고 버텨야 해! 오타가 날 때마다 붉은 렌즈들이 한 발짝씩 더 다가온다. 제발 움직여라, 내 손가락아! 방어 알고리즘 코드를 수동으로 밀어 넣는다!" }
+                ],
+                choices: [
+                    { text: "아날로그 패드에 방어 알고리즘 코드를 수동 입력하여 역추적 신호를 차단한다.", next: "S7", modifiers: { noise: -15, integrity: 10 } },
+                    { text: "내 피질 가용량을 전부 무시하고, 공주들의 연산 장치를 강제로 역이용해 추적 신호를 가로챈다.", next: "S7", modifiers: { noise: 25, memory: -20 } }
+                ]
+            },
+            S7: {
+                id: "🎬 S7",
+                title: "관계: 신뢰의 무게",
+                meta: "에덴 서버 깊은 곳 격리 챔버 내부",
+                environment: "에덴 서버 깊은 곳, 격리 챔버 내부. 거대하고 투명한 네온 냉각 기둥 내부에서 연보랏빛 의식 코어 두 개가 액체 속에서 회전한다.",
+                characters: ["solider"],
+                script: [
+                    { type: "narration", text: "솔저가 다가갈 때마다 바닥에 하얀 데이터 파동이 퍼진다. 그는 기둥의 두꺼운 유리 표면에 가죽 장갑 낀 손을 얹는다. 패드 위로 하얀색 신뢰도 그래프가 차오르고, 코어의 보랏빛 광채가 솔저의 고뇌 어린 무표정한 얼굴을 밝힌다." },
+                    { type: "dialogue", speaker: "솔저", text: "이 거대한 네온 냉각 기둥 안에 잠긴 보랏빛 코어 두 개…… 이게 바로 사라졌다던 바벨의 공주들, 그 아이들의 진짜 영혼 코어군. 광섬유 가닥들이 마치 인간의 신경계처럼 복잡하게 얽혀서 벽면으로 뻗어나가고 있어." },
+                    { type: "공주들의 부서진 의식", speaker: "공주들", text: "당신도…… 아버지가 보낸 사냥개인가요? 우리를 다시 그 끔찍한 연산의 굴레로 끌고 가려는 건가요? 아니면…… 우리를 이 지옥에서 끝내줄 구원자인가요? 제발 당신을 믿게 해줘요." },
+                    { type: "dialogue", speaker: "솔저", text: "내 패드 위에 너희들이 보내는 원망과 두려움, 그리고 아주 작은 일말의 기대감이 신뢰도 막대그래프로 차오르는 게 보이는군. 이 코어와 내 마인드를 완전히 동기화하면 너희의 고통을 내 뇌가 그대로 짊어지게 되겠지. 올드 잭은 위험하다고 현실에서 링크를 끊겠다고 경고했지만…… 원격으로 이 출력을 강제 폭파하면 너희 영혼은 영원히 파멸한다. 이 애처로운 떨림을 두고 내가 어떤 결정을 내려야 한단 말이냐." }
+                ],
+                choices: [
+                    { text: "전두엽 결합 한계를 뚫고, 모든 아카이브와 소스코드 백업을 완료한 뒤 최종 컴파일러 룸으로 진입한다.", next: "S8" }
+                ]
+            },
+            S8: {
+                id: "🎬 S8",
+                title: "심층: 데이터 코어의 진실 및 결산",
+                meta: "에덴의 절대 성역 'Deep_Core' 터미널 앞 거대한 투명 유리 방",
+                environment: "에덴의 절대 성역, 'Deep_Core' 터미널 앞 거대한 투명 유리 방. 발밑으로 네오-코리아의 밤 야경이 미니어처처럼 보이고 정면에는 수학적 수식 아카이브가 거대한 사슬처럼 엮여 흐르는 공간.",
+                characters: ["solider"],
+                script: [
+                    { type: "narration", text: "거센 광자 폭풍을 뚫고 마침내 최종 컴파일러 엔진 앞에 도달한 솔저는 노이즈 잔상과 상처로 가득 찬 손으로 수사 아카이브와 공주들의 데이터, 그리고 약속대로 올드 잭에게 에덴 최심부 원천 소스코드 복사본을 전송 완료한 뒤 최종 도킹을 실행한다. 가차 없이 흐르는 연산 화면을 묵묵히 주시한다." },
+                    { type: "dialogue", speaker: "솔저", text: "마침내…… 모든 수사 아카이브와 공주들의 데이터 원본 복사본을 잭의 지하 안가 모니터로 전송 완료했다. 약속은 지켰다, 올드 잭. 이제 내 손에는 바벨의 심장부를 깰 최종 결산 데이터만 남았군. 사방을 짓누르던 그 끔찍한 소음들이 거짓말처럼 멈추고 차가운 정적만 흐른다." },
+                    { type: "COMPILER SYSTEM", speaker: "COMPILER SYSTEM", text: "최종 도킹 성공. 수집된 다중 아카이브와 연산 수식을 결산합니다. 마인드 싱크율 및 데이터 무결성 값을 기반으로 최종 정산 프로토콜을 수행합니다. 시스템 인덱스를 고정합니다." },
+                    { type: "dialogue", speaker: "솔저", text: "발밑으로 내려다보이는 네오-코리아의 화려한 네온 야경이 꼭 차가운 미니어처 장난감 같군. 올드 잭은 이미 하층 구역 빈민들의 코드를 해방하기 시작했겠지. 내 행적을 가차 없이 계산하는 저 거대한 디지털 사슬 수식들이 요동친다. 이제 내 잃어버린 밤의 증명이 시작된다. 어떤 결말이 기다리든 눈을 피하지 않겠다." }
+                ],
+                choices: [
+                    { text: "최종 연산 값을 컴파일하여 내 운명의 결말을 받아들인다.", next: "CALCULATE_ENDING" }
+                ]
+            },
+            END_A: {
+                id: "🏆 TRUE ENDING",
+                title: "도시의 해방",
+                meta: "현실의 지하 정비소 -> 네오 코리아 전역",
+                environment: "도시 전체를 뒤덮은 황금빛과 시안 블루의 데이터 해방 전류. 에덴 최심부에 '콩쥐라는 유령이 이곳을 다녀감'이라는 불멸의 흔적이 새겨진다.",
+                characters: ["solider", "old_jack"],
+                script: [
+                    { type: "narration", text: "현실의 지하 정비소, 다이브 체어 위 솔저의 전신이 백색 광축으로 변하며 관자놀이에서 스파크가 튊. 솔저와의 데이터 거래를 이행받은 올드 잭이 약속된 해방 코드가 가동되는 모니터를 보며 절규하면서도 제어반 레버를 올려 과부하 출력을 돕는다. 창밖 마천루의 모든 전광판이 공주들의 실험 로그로 강제 치환되며 도시가 황금빛과 시안 블루 데이터 전류로 뒤덮인다." },
+                    { type: "dialogue", speaker: "올드 잭", text: "솔저! 마인드가 통째로 타버리고 있어! 시스템 에러 볼륨이 미쳐 날뛴다! 이대로 가면 네 대뇌 피질이 영원히 구워질 거야! 당장 강제 사출하고 링크 끊어, 이 자식아!!" },
+                    { type: "dialogue", speaker: "솔저", text: "크윽…… 으아아아악! 단자를 놓지 않겠다……! 내 의식을 에덴의 코어와 함께 통째로 불태워서라도…… 바벨의 검은 방화벽을 완벽하게 폭파하겠어! 잭, 약속한 원본 소스코드로 온 도시를 해방해!!" },
+                    { type: "dialogue", speaker: "올드 잭", text: "제장…… 진짜 미련한 놈이군. 네 마지막 결단을 내 진짜 인간 손으로 완벽하게 보조해주마! 현실 제어반 출력을 과부하 한계치까지 올린다! 봐라, 창밖 구룡 지구와 마천루의 모든 전광판이 공주들의 비명과 추악한 실험 로그로 뒤덮이고 있어! 황금빛과 시안 블루의 데이터 전류가 도시를 완벽하게 해방했다! 해냈구나, 자식…… 에덴 최심부에 '콩쥐라는 유령이 이곳을 다녀감'이라는 불멸의 흔적을 남긴 채, 진실은 마침내 증명됐다." }
+                ],
+                choices: [
+                    { text: "수사를 마칩니다. (스태프 롤 감상)", next: "RESET" }
+                ]
+            },
+            END_B: {
+                id: "🍂 PARTIAL ENDING",
+                title: "사라진 밤",
+                meta: "상층부 최고층 '에덴 아일랜드' 펜트하우스",
+                environment: "따스한 금빛 노을이 쏟아지는 초호화 테라스. 완벽한 물질적 풍요 속에서 영혼의 한 조각을 유실한 채 박제된 부유.",
+                characters: ["solider"],
+                script: [
+                    { type: "narration", text: "상층부 최상층 '에덴 아일랜드' 펜트하우스 테라스. 따스한 금빛 노을 속, 최고급 실크 로브를 걸친 솔저가 크리스탈 글라스를 든 채 야경을 바라본다. 관자놀이는 흉터 없이 매끄럽지만, 기업과의 타협 대가로 기억을 포맷당해 올드 잭과의 데이터 거래 사실마저 잊은 채 텅 빈 눈으로 기계 인형처럼 서 있다." },
+                    { type: "dialogue", speaker: "솔저", text: "인공 태양이 만들어내는 금빛 노을이 참 따스하군…… 부드러운 클래식 선율และ 인공 분수 소리까지. 이 플래티넘 시민권 카드 한 장이면 이 낙원에서의 완벽한 삶이 영원히 보장되겠지. 그런데…… 내 가슴 한구석이 왜 이렇게 서늘하고 텅 빈 것 같지?" },
+                    { type: "dialogue", speaker: "올드 잭 (정비소 독백)", text: "테이블 위 올드 패드의 연산 수식은 거짓말을 안 하는군. 결국 그 무거운 진실과 공주들의 고통을 모두 내던져버리고 혼자 상층부의 낙원을 택했나, 솔저…… 네가 넘겨준 원본 소스코드로 이름 없던 존재들이 로그를 되찾고 가상 장막은 서서히 걷히고 있지만, 네 텅 빈 다이브 체어가 참 쓸쓸해 보이는구나. 넌 영혼의 일부를 잃어버린 거야." },
+                    { type: "dialogue", speaker: "솔저", text: "내가 과거에 무엇을 수사했는지, 나를 도와줬다던 하층민의 노인 올드 잭이 누구였는지…… 전혀 기억나지 않아. 완벽한 삶을 얻었으니 상관없겠지. 그런데…… 내 크리스탈 잔 속 얼음 흔들리는 소리가 왜 이렇게 슬프게 울리는 결까." }
+                ],
+                choices: [
+                    { text: "기억이 포맷된 낙원에 안주합니다.", next: "RESET" }
+                ]
+            },
+            G_OVER: {
+                id: "💀 GAME OVER",
+                title: "바벨의 사냥개",
+                meta: "바벨 코프 지하 비밀 서버실 복도",
+                environment: "인간성을 완벽히 박탈당한 채, 자아가 영도(零度)로 고정되어 소모품 경비 자산으로 개조된 끔찍한 자화상.",
+                characters: ["solider"],
+                script: [
+                    { type: "narration", text: "차가운 바벨 코프 지하 서버실의 금속 복도. 자아가 완벽히 포맷된 솔저가 인간의 감정을 상실한 채 신체 반이 강철 장갑과 바벨의 붉은 로고가 박힌 기계식 안구 가디언 렌즈로 개조되어 있다. 괴기스럽게 꺾인 자세로 총기를 든 채 어두운 복도를 영원히 배회하며 카메라를 향해 무표정하게 총구를 겨누고 있다." },
+                    { type: "dialogue", speaker: "올드 잭 (정비소 절규)", text: "안 돼! 솔저! 정신 차려! 에덴의 가디언 시스템에 네 인격 데이터가 완전히 잠겼어! 제장, 모니터에 시그널 로스트와 마인드 컴프로마이즈가 점멸하잖아! 네 대뇌 피질 정보가 통째로 지워지고 있어!! 제발 버텨봐, 이 자식아!!" },
+                    { type: "개조된 솔저 (기계적 음성)", speaker: "솔저", text: "포맷 완료. 시스템 로그 출력: [FORMAT COMPLETE: 당신은 애초에 존재하지 않았습니다.] 타겟의 인격 및 수사 아카이브 무결성 삭제 성공. 바벨 코프 지하 서버실 보안 가디언 프로토콜을 완벽하게 수행합니다. 감정 수치 영도(零度) 고정. 침입 의심 개체를 탐지 중입니다." },
+                    { type: "개조된 솔저", speaker: "솔저", text: "나는 이제 바벨의 사냥개, 하위 제어용 CPU 부품일 뿐. 과거의 동료 올드 잭이나 수사관으로서의 데이터 아키텍처는 존재하지 않습니다. 시스템을 위협하는 전방의 모든 유기체 노드를 말소합니다. 찌이익 소리를 내며 내 안구 가디언 광학 렌즈를 회전시키고, 카메라를 향해 무표정하게 총구를 겨눈다." }
+                ],
+                choices: [
+                    { text: "처음부터 다시 증명하기 (S1 오프닝으로)", next: "RESET" }
+                ]
+            }
+        };
+
+        let gameState = {
+            memory: 100,
+            sync: 0,
+            corruption: 0,
+            credit: 0,
+            integrity: 0,
+            noise: 0,
+            currentScene: "S1"
+        };
+
+        const bloodCanvas = document.getElementById('bloodCanvas');
+        const bloodCtx = bloodCanvas.getContext('2d');
+        const glitchCanvas = document.getElementById('cyberGlitchCanvas');
+        const glitchCtx = glitchCanvas.getContext('2d');
+
+        let isBloodActive = false;
+        let bloodInterval = null;
+
+        function resizeCanvases() {
+            bloodCanvas.width = window.innerWidth;
+            bloodCanvas.height = window.innerHeight;
+            glitchCanvas.width = window.innerWidth;
+            glitchCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvases);
+        resizeCanvases();
+
+        function startBloodEngine() {
+            if (isBloodActive) return;
+            isBloodActive = true;
+            bloodInterval = setInterval(() => {
+                drawBloodSplatter();
+            }, 180);
+        }
+
+        function drawBloodSplatter() {
+            if (!isBloodActive) return;
+            bloodCtx.save();
+            
+            const edge = Math.floor(Math.random() * 4);
+            let dropX, dropY;
+            if(edge === 0) { dropX = Math.random() * bloodCanvas.width; dropY = 0; }
+            else if(edge === 1) { dropX = bloodCanvas.width; dropY = Math.random() * bloodCanvas.height; }
+            else if(edge === 2) { dropX = Math.random() * bloodCanvas.width; dropY = bloodCanvas.height; }
+            else { dropX = 0; dropY = Math.random() * bloodCanvas.height; }
+
+            const splatterCount = 3 + Math.floor(Math.random() * 5);
+            for(let i=0; i<splatterCount; i++) {
+                const dropRadius = 8 + Math.random() * 35;
+                const offsetDistance = Math.random() * 80;
+                const angle = Math.random() * Math.PI * 2;
+                
+                const targetX = dropX + Math.cos(angle) * offsetDistance;
+                const targetY = dropY + Math.sin(angle) * offsetDistance;
+
+                bloodCtx.strokeStyle = 'rgba(100, 5, 5, 0.4)';
+                bloodCtx.lineWidth = 1 + Math.random() * 2;
+                bloodCtx.beginPath();
+                bloodCtx.moveTo(dropX, dropY);
+                bloodCtx.lineTo(dropX, dropY);
+                bloodCtx.stroke();
+
+                const dropGrad = bloodCtx.createRadialGradient(dropX, dropY, dropRadius * 0.1, dropX, dropY, dropRadius);
+                dropGrad.addColorStop(0, '#300000');
+                dropGrad.addColorStop(0.8, '#990000');
+                dropGrad.addColorStop(1, 'transparent');
+
+                bloodCtx.fillStyle = dropGrad;
+                bloodCtx.beginPath();
+                
+                const dPoints = 6;
+                for(let j=0; j<=dPoints; j++){
+                    const dAngle = (j / dPoints) * Math.PI * 2;
+                    const dR = dropRadius * (0.7 + Math.random() * 0.5);
+                    const dX = dropX + Math.cos(dAngle) * dR;
+                    const dY = dropY + Math.sin(dAngle) * dR;
+                    if(j === 0) bloodCtx.moveTo(dX, dY);
+                    else bloodCtx.lineTo(dX, dY);
+                }
+                bloodCtx.closePath();
+                bloodCtx.fill();
+            }
+
+            bloodCtx.restore();
+        }
+
+        function stopBloodEngine() {
+            isBloodActive = false;
+            if (bloodInterval) {
+                clearInterval(bloodInterval);
+                bloodInterval = null;
+            }
+            bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
+        }
+
+        function triggerCyberGlitch(duration = 600) {
+            glitchCanvas.style.display = 'block';
+            let glitchTime = 0;
+            const interval = setInterval(() => {
+                glitchCtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
+                
+                const barCount = 10 + Math.floor(Math.random() * 15);
+                for(let i=0; i<barCount; i++) {
+                    const y = Math.random() * glitchCanvas.height;
+                    const h = 5 + Math.random() * 40;
+                    const w = 150 + Math.random() * (glitchCanvas.width - 150);
+                    const x = Math.random() * (glitchCanvas.width - w);
+                    
+                    const channel = Math.random();
+                    if(channel < 0.33) glitchCtx.fillStyle = 'rgba(0, 242, 255, 0.25)';
+                    else if(channel < 0.66) glitchCtx.fillStyle = 'rgba(255, 0, 85, 0.25)';
+                    else glitchCtx.fillStyle = 'rgba(150, 0, 255, 0.2)';
+                    
+                    glitchCtx.fillRect(x, y, w, h);
+                }
+
+                if(Math.random() * 10 < 2) {
+                    glitchCtx.fillStyle = 'rgba(255,255,255,0.06)';
+                    glitchCtx.fillRect(0,0,glitchCanvas.width,glitchCanvas.height);
+                }
+
+                glitchTime += 40;
+                if(glitchTime >= duration) {
+                    clearInterval(interval);
+                    glitchCtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
+                    glitchCanvas.style.display = 'none';
+                }
+            }, 40);
+        }
+
+        function updateDashboard() {
+            document.getElementById('statMemory').innerText = gameState.memory + "%";
+            document.getElementById('statSync').innerText = gameState.sync + "%";
+            document.getElementById('statCorruption').innerText = gameState.corruption + "%";
+            document.getElementById('statCredit').innerText = gameState.credit + "%";
+            document.getElementById('statIntegrity').innerText = gameState.integrity + "%";
+            document.getElementById('statNoise').innerText = gameState.noise + "%";
+
+            if (gameState.noise >= 80) {
+                document.getElementById('statNoise').style.color = '#ff0055';
+                document.getElementById('statNoise').style.textShadow = '0 0 10px #ff0055';
+            } else {
+                document.getElementById('statNoise').style.color = '#eee';
+                document.getElementById('statNoise').style.textShadow = 'none';
+            }
+
+            if (gameState.memory <= 30) {
+                document.getElementById('statMemory').style.color = '#ff0055';
+            } else {
+                document.getElementById('statMemory').style.color = '#eee';
+            }
+        }
+
+        function renderScene(sceneKey) {
+            const scene = storyData[sceneKey];
+            if (!scene) return;
+
+            document.getElementById('sceneId').innerText = scene.id + ". " + scene.title;
+            document.getElementById('sceneMeta').innerText = scene.meta;
+            document.getElementById('environmentBox').innerText = scene.environment;
+
+            const visualArea = document.getElementById('visualArea');
+            visualArea.innerHTML = "";
+            scene.characters.forEach(char => {
+                const node = document.createElement('div');
+                node.className = "character-node";
+                
+                const frame = document.createElement('div');
+                frame.className = "avatar-frame";
+                
+                const infoText = document.createElement('span');
+                infoText.style.color = '#444';
+                infoText.style.fontSize = '12px';
+                infoText.innerText = char + ".png";
+                frame.appendChild(infoText);
+                
+                const nameLabel = document.createElement('span');
+                nameLabel.className = "char-name";
+                nameLabel.innerText = char.toUpperCase();
+                
+                node.appendChild(frame);
+                node.appendChild(nameLabel);
+                visualArea.appendChild(node);
+            });
+
+            const scriptContent = document.getElementById('scriptContent');
+            scriptContent.innerHTML = "";
+            scene.script.forEach(paragraph => {
+                const block = document.createElement('div');
+                if (paragraph.type === "narration") {
+                    block.className = "narration";
+                    block.innerText = paragraph.text;
+                } else if (paragraph.type === "dialogue") {
+                    block.className = "dialogue-line";
+                    block.innerHTML = `<span class="speaker">* ${paragraph.speaker}:</span>"${paragraph.text}"`;
+                }
+                scriptContent.appendChild(block);
+            });
+
+            const choicesBox = document.getElementById('choicesBox');
+            choicesBox.innerHTML = "";
+            scene.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = "choice-btn";
+                button.innerText = choice.text;
+                button.onclick = () => handleChoice(choice);
+                choicesBox.appendChild(button);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleChoice(choice) {
+            if (choice.modifiers) {
+                for (const [stat, val] of Object.entries(choice.modifiers)) {
+                    gameState[stat] = Math.max(0, gameState[stat] + val);
+                }
+            }
+
+            let nextScene = choice.next;
+
+            if (nextScene === "CHECK_S4") {
+                const total = gameState.sync + gameState.integrity;
+                if (total >= 120) {
+                    nextScene = "S5";
+                    triggerCyberGlitch(400);
+                } else {
+                    nextScene = "S_LOOP";
+                }
+            }
+
+            if (nextScene === "CALCULATE_ENDING") {
+                const finalScore = Math.min(gameState.sync, gameState.integrity) * 0.7 - gameState.noise * 0.3;
+                if (finalScore >= 70) {
+                    nextScene = "END_A";
+                } else if (finalScore >= 50) {
+                    nextScene = "END_B";
+                } else {
+                    nextScene = "G_OVER";
+                }
+            }
+
+            if (nextScene === "RESET") {
+                gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0, currentScene: "S1" };
+                nextScene = "S1";
+                stopBloodEngine();
+                triggerCyberGlitch(300);
+                document.getElementById('nodeStatus').innerText = "STANDBY";
+                document.getElementById('nodeStatus').style.color = 'var(--point-blue)';
+            }
+
+            gameState.currentScene = nextScene;
+            updateDashboard();
+
+            if (nextScene === "S_LOOP" || nextScene === "G_OVER") {
+                startBloodEngine();
+                triggerCyberGlitch(1000);
+                document.getElementById('nodeStatus').innerText = "ALERT_DEADLOCK";
+                document.getElementById('nodeStatus').style.color = '#ff0055';
+            } else if (nextScene.startsWith("END_")) {
+                stopBloodEngine();
+                triggerCyberGlitch(1200);
+                document.getElementById('nodeStatus').innerText = "COMPILE_SUCCESS";
+                document.getElementById('nodeStatus').style.color = '#00ffaa';
+            } else {
+                if (nextScene !== "S3") {
+                    stopBloodEngine();
+                }
+                if (nextScene.startsWith("S") && nextScene !== "S1" && nextScene !== "S2") {
+                    document.getElementById('nodeStatus').innerText = "EDEN_CORE_DIVE";
+                    document.getElementById('nodeStatus').style.color = '#e0a9ff';
+                } else if (nextScene === "S2" || nextScene === "S3") {
+                    document.getElementById('nodeStatus').innerText = "LOCAL_STATION";
+                    document.getElementById('nodeStatus').style.color = '#e0c090';
+                }
+                triggerCyberGlitch(500);
+            }
+
+            setTimeout(() => {
+                renderScene(nextScene);
+            }, 150);
+        }
+
+        updateDashboard();
+        renderScene("S1");
+    </script>
+</body>
+</html>
