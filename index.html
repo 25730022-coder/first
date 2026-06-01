@@ -72,13 +72,16 @@
         }
 
         /* ==========================================
-           [2단계] 게임 타이틀 표지
+           [2단계] 게임 타이틀 표지 (cover_4.png 배경 적용)
         ========================================== */
         #titleScreen {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background-color: #000000;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85)), url('cover_4.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             z-index: 9999;
             display: none;
             flex-direction: column;
@@ -105,9 +108,12 @@
         }
         .title-author {
             font-size: 11px;
-            color: #555555;
+            color: #cccccc;
             letter-spacing: 2px;
             margin-bottom: 45px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 3px 10px;
+            border-radius: 2px;
         }
         .title-menu {
             display: flex;
@@ -152,9 +158,7 @@
             stroke: #ffffff;
         }
 
-        /* ==========================================
-           새로운 서류 가방 가죽/종이풍 모달 (이미지 완벽 대응)
-        ========================================== */
+        /* 모달 윈도우 */
         .custom-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -165,8 +169,6 @@
             justify-content: center;
             align-items: center;
         }
-        
-        /* 스크린샷 2026-06-01 145644.jpg 서막 박스 디자인 */
         .paper-modal-box {
             background-color: var(--paper-modal-bg);
             width: 850px;
@@ -213,7 +215,7 @@
             color: var(--paper-bg);
         }
 
-        /* 스크린샷 2026-06-01 145652.png 분기 구상도 내부 타임라인 */
+        /* 분기 구상도 */
         .timeline-container {
             border: 1px dashed #8c8069;
             background: rgba(0,0,0,0.02);
@@ -230,7 +232,7 @@
             height: 1px;
             background-color: #8c9296;
             z-index: 1;
-            transform: translateY(-24px); /* 아이콘 위치 기준 중앙 정렬 맞춤 */
+            transform: translateY(-24px);
         }
         .timeline-node {
             display: flex;
@@ -260,48 +262,24 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: transform 0.2s, border-color 0.2s;
         }
-        .node-circle svg {
-            width: 16px;
-            height: 16px;
-            fill: #555555;
-        }
-        /* 오픈된 첫 노드 스타일 (빨간 원형 자물쇠) */
-        .timeline-node.active .node-circle {
-            border: 2px solid #7a1212;
-        }
-        .timeline-node.active .node-circle svg {
-            fill: #7a1212;
-        }
-        .node-title {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: #555555;
-        }
-        .timeline-node.active .node-title {
-            color: #7a1212;
-            border-bottom: 1px solid #7a1212;
-            padding-bottom: 1px;
-        }
-        .node-subtitle {
-            font-size: 11px;
-            color: #777267;
-        }
-        .timeline-node:hover .node-circle {
-            transform: scale(1.1);
-            border-color: #000;
-        }
+        .node-circle svg { width: 16px; height: 16px; fill: #555555; }
+        .timeline-node.active .node-circle { border: 2px solid #7a1212; }
+        .timeline-node.active .node-circle svg { fill: #7a1212; }
+        .node-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; color: #555555; }
+        .timeline-node.active .node-title { color: #7a1212; border-bottom: 1px solid #7a1212; padding-bottom: 1px; }
+        .node-subtitle { font-size: 11px; color: #777267; }
+        .timeline-node:hover .node-circle { transform: scale(1.1); border-color: #000; }
 
         /* ==========================================
-           [3단계] 인게임 인터페이스 구조
+           [3단계] 인게임 인터페이스 구조 (컴퓨터 화면 전체 확대형)
         ========================================== */
         #mainGameWrapper {
             display: none;
             opacity: 0;
             transition: opacity 0.6s ease;
-            width: 900px;
-            max-width: 95%;
-            margin: 40px auto;
+            width: 96vw; /* 고정 크기 제거, 컴퓨터 해상도 좌우로 확장 */
+            max-width: 1800px;
+            margin: 20px auto;
             position: relative;
             z-index: 10;
         }
@@ -315,61 +293,71 @@
         #bloodCanvas { z-index: 1; }
         #cyberGlitchCanvas { z-index: 2; display: none; }
 
+        /* 상단 모니터 상태 표시 패널 확장 */
         .system-dashboard {
-            background: rgba(10, 10, 12, 0.85);
+            background: rgba(10, 10, 12, 0.9);
             border: 1px solid #222;
-            padding: 15px 25px;
+            padding: 18px 40px;
             border-radius: 4px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.7);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
         }
-        .stat-group { display: flex; gap: 25px; }
+        .stat-group { display: flex; gap: 40px; } /* 대시보드 스탯 간격 확장 */
         .stat-item { display: flex; flex-direction: column; }
-        .stat-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .stat-value { font-family: monospace; font-size: 18px; font-weight: bold; color: #eee; transition: color 0.5s ease; }
+        .stat-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
+        .stat-value { font-family: monospace; font-size: 20px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
+        /* 하단 서류철 게임 창 레이아웃 - 좌우 전체 화면 확장 */
         .game-container {
             background-color: var(--paper-bg);
             border-radius: 2px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.15);
-            padding: 50px 60px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9), inset 0 0 80px rgba(0,0,0,0.2);
+            padding: 60px 80px; /* 내부 여백도 시원하게 조율 */
             box-sizing: border-box;
             position: relative;
             border: 1px solid #bdae8a;
+            min-height: 80vh; /* 화면에 꽉 차는 높이 유도 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .game-container::before {
             content: '';
             position: absolute;
-            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
             border: 1px solid rgba(122, 18, 18, 0.15);
             pointer-events: none;
         }
-        .scene-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--stamp-red); padding-bottom: 10px; margin-bottom: 30px; }
-        .scene-title { font-size: 24px; font-weight: 700; color: var(--stamp-red); letter-spacing: -0.5px; }
-        .scene-meta { font-size: 13px; font-style: italic; color: #554e3f; }
-        .environment-box { background: rgba(0, 0, 0, 0.04); border-left: 3px solid #7a6e55; padding: 12px 18px; margin-bottom: 25px; font-size: 14px; line-height: 1.6; color: #4a4235; }
-        .visual-area { display: flex; justify-content: center; gap: 40px; margin: 30px 0; min-height: 160px; align-items: center; }
         
+        .scene-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--stamp-red); padding-bottom: 12px; margin-bottom: 35px; }
+        .scene-title { font-size: 28px; font-weight: 700; color: var(--stamp-red); letter-spacing: -0.5px; }
+        .scene-meta { font-size: 14px; font-style: italic; color: #554e3f; }
+        
+        .environment-box { background: rgba(0, 0, 0, 0.04); border-left: 4px solid #7a6e55; padding: 15px 25px; margin-bottom: 30px; font-size: 15px; line-height: 1.7; color: #4a4235; }
+        
+        /* 단서 파일 영역 좌우 가로 배치 최적화 */
+        .visual-area { display: flex; justify-content: center; gap: 60px; margin: 35px 0; min-height: 180px; align-items: center; }
         .character-node { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.8s ease forwards; }
-        .avatar-frame { width: 110px; height: 110px; border: 1px solid #7a6e55; background-color: rgba(0,0,0,0.05); display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 10px; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
+        .avatar-frame { width: 130px; height: 130px; border: 1px solid #7a6e55; background-color: rgba(0,0,0,0.05); display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 12px; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); }
         .avatar-frame::after { content: ''; position: absolute; width: 6px; height: 6px; border-top: 1px solid var(--stamp-red); border-left: 1px solid var(--stamp-red); top: 4px; left: 4px; }
-        .char-name { font-size: 13px; font-weight: bold; color: var(--ink-black); border-bottom: 1px dashed #7a6e55; padding-bottom: 2px; }
+        .char-name { font-size: 14px; font-weight: bold; color: var(--ink-black); border-bottom: 1px dashed #7a6e55; padding-bottom: 2px; }
 
-        .script-content { font-size: 16px; line-height: 1.8; color: var(--ink-black); margin-bottom: 35px; min-height: 120px; }
-        .narration { font-style: italic; color: #4a4235; margin-bottom: 20px; position: relative; padding-left: 15px; }
-        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 10px; top: 2px; }
-        .dialogue-line { margin-bottom: 14px; }
-        .speaker { font-weight: 700; color: var(--stamp-red); margin-right: 8px; }
+        .script-content { font-size: 18px; line-height: 1.9; color: var(--ink-black); margin-bottom: 45px; min-height: 150px; }
+        .narration { font-style: italic; color: #4a4235; margin-bottom: 22px; position: relative; padding-left: 20px; }
+        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 11px; top: 3px; }
+        .dialogue-line { margin-bottom: 16px; }
+        .speaker { font-weight: 700; color: var(--stamp-red); margin-right: 10px; }
 
-        .choices-box { display: flex; flex-direction: column; gap: 12px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 25px; }
-        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 14px 20px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 15px; color: var(--ink-black); cursor: pointer; transition: all 0.3s ease; position: relative; background-color: rgba(255,255,255,0.2); }
-        .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); padding-left: 28px; }
+        /* 하단 수사 선택 버튼 전체 넓게 배치 */
+        .choices-box { display: flex; flex-direction: column; gap: 14px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px; }
+        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 18px 25px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 16px; color: var(--ink-black); cursor: pointer; transition: all 0.3s ease; position: relative; background-color: rgba(255,255,255,0.2); }
+        .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); padding-left: 35px; }
         .choice-btn::before { content: '☞'; position: absolute; left: -10px; opacity: 0; transition: all 0.3s ease; }
-        .choice-btn:hover::before { left: 12px; opacity: 1; }
+        .choice-btn:hover::before { left: 15px; opacity: 1; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
@@ -379,7 +367,6 @@
 </head>
 <body>
 
-    <!-- [1단계] 로딩 스크린 -->
     <div id="loadingScreen">
         <div class="loading-text">S Y S T E M   R E C O V E R I N G</div>
         <div class="loading-bar-container">
@@ -387,22 +374,17 @@
         </div>
     </div>
 
-    <!-- [2단계] 타이틀 표지 -->
     <div id="titleScreen">
         <div class="title-main">UNLOGGED</div>
         <div class="title-sub">사라진 밤의 증명</div>
         <div class="title-author">25730022 김지은</div>
         <div class="title-menu">
             <button class="start-btn" onclick="startInvestigation('S1')">수사 시작하기</button>
-            
-            <!-- 파일 모양 아이콘 (서막 호출기) -->
             <div class="title-icon-wrapper">
                 <svg class="title-icon" viewBox="0 0 24 24" onclick="openModal('prologueOverlay')">
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                 </svg>
             </div>
-            
-            <!-- 자물쇠 모양 아이콘 (분기 구상도 호출기) -->
             <div class="title-icon-wrapper">
                 <svg class="title-icon" viewBox="0 0 24 24" onclick="openModal('chapterOverlay')">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -412,7 +394,6 @@
         </div>
     </div>
 
-    <!-- [오버레이 모달 1] 사건 분석 서막 (스크린샷 2026-06-01 145644.jpg) -->
     <div id="prologueOverlay" class="custom-overlay" onclick="closeModal('prologueOverlay')">
         <div class="paper-modal-box" onclick="event.stopPropagation()">
             <div class="modal-main-title">[사건 분석 서막]</div>
@@ -426,70 +407,33 @@
         </div>
     </div>
 
-    <!-- [오버레이 모달 2] 수사 파일 무결성 분기 구상도 (스크린샷 2026-06-01 145652.png) -->
     <div id="chapterOverlay" class="custom-overlay" onclick="closeModal('chapterOverlay')">
         <div class="paper-modal-box" style="width: 900px;" onclick="event.stopPropagation()">
             <div class="modal-main-title" style="text-align: center;">[수사 파일 무결성 분기 구상도]</div>
             <hr class="modal-divider">
-            
             <div class="timeline-container">
                 <div class="timeline-line"></div>
-                
-                <!-- S1 노드 (활성화 상태) -->
                 <button class="timeline-node active" onclick="jumpToChapter('S1')">
-                    <div class="node-circle">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </div>
-                    <div class="node-title">S1. 오프닝</div>
-                    <div class="node-subtitle">바벨의 그림자</div>
+                    <div class="node-circle"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                    <div class="node-title">S1. 오프닝</div><div class="node-subtitle">바벨의 그림자</div>
                 </button>
-
-                <!-- S2 노드 -->
                 <button class="timeline-node" onclick="jumpToChapter('S2')">
-                    <div class="node-circle">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </div>
-                    <div class="node-title">S2. 진입</div>
-                    <div class="node-subtitle">가상 에덴의 장막</div>
+                    <div class="node-circle"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                    <div class="node-title">S2. 진입</div><div class="node-subtitle">가상 에덴의 장막</div>
                 </button>
-
-                <!-- S3-S6 노드 -->
                 <button class="timeline-node" onclick="jumpToChapter('S3')">
-                    <div class="node-circle">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </div>
-                    <div class="node-title">S3-S6. 분석 및 분석</div>
-                    <div class="node-subtitle">기억 조우 / 데이터 코어</div>
+                    <div class="node-circle"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                    <div class="node-title">S3-S6. 분석</div><div class="node-subtitle">기억 조우 / 데이터 코어</div>
                 </button>
-
-                <!-- S7-S8 노드 -->
                 <button class="timeline-node" onclick="jumpToChapter('S7')">
-                    <div class="node-circle">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </div>
-                    <div class="node-title">S7-S8. 결전</div>
-                    <div class="node-subtitle">사라진 밤의 증명</div>
+                    <div class="node-circle"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                    <div class="node-title">S7-S8. 결전</div><div class="node-subtitle">사라진 밤의 증명</div>
                 </button>
             </div>
-
             <button class="modal-close-btn" onclick="closeModal('chapterOverlay')">구상도 닫기</button>
         </div>
     </div>
 
-
-    <!-- [3단계] 본 게임 메인 프레임 -->
     <canvas id="bloodCanvas"></canvas>
     <canvas id="cyberGlitchCanvas"></canvas>
 
@@ -510,19 +454,20 @@
         </div>
 
         <div class="game-container">
-            <div class="scene-header">
-                <span id="sceneId" class="scene-title">로드 중...</span>
-                <span id="sceneMeta" class="scene-meta">로드 중...</span>
+            <div>
+                <div class="scene-header">
+                    <span id="sceneId" class="scene-title">로드 중...</span>
+                    <span id="sceneMeta" class="scene-meta">로드 중...</span>
+                </div>
+                <div id="environmentBox" class="environment-box">환경 로드 중...</div>
+                <div id="visualArea" class="visual-area"></div>
+                <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
             </div>
-            <div id="environmentBox" class="environment-box">환경 로드 중...</div>
-            <div id="visualArea" class="visual-area"></div>
-            <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
             <div id="choicesBox" class="choices-box"></div>
         </div>
     </div>
 
     <script>
-        // 시나리오 데이터 아카이브
         const storyData = {
             S1: {
                 id: "🎬 서막", title: "바벨의 그림자", meta: "바벨 코프 본사 120층 최고급 펜트하우스",
@@ -637,10 +582,10 @@
             },
             END_A: {
                 id: "🏆 TRUE ENDING", title: "도시의 해방", meta: "현실의 지하 정비소 -> 네오 코리아 전역",
-                environment: "도시 전체를 뒤덮은 황금빛과 시안 블루의 데이터 해방 전류.",
+                environment: "도시 전체를 뒤덮은 황금빛และ시안 블루의 데이터 해방 전류.",
                 characters: ["solider", "old_jack"],
                 script: [
-                    { type: "dialogue", speaker: "올드 잭", text: "봐라, 창밖 구룡 지구와 마천루의 모든 전광판이 공주들의 비명과 추악한 실험 로그로 뒤덮지고 있어! 진실은 마침내 증명됐다!" }
+                    { type: "dialogue", speaker: "old_jack", text: "봐라, 창밖 구룡 지구와 마천루의 모든 전광판이 공주들의 비명과 추악한 실험 로그로 뒤덮지고 있어! 진실은 마침내 증명됐다!" }
                 ],
                 choices: [{ text: "수사를 마칩니다. (스태프 롤 감상)", next: "RESET" }]
             },
@@ -649,7 +594,7 @@
                 environment: "따스한 금빛 노을이 쏟아지는 초호화 테라스.",
                 characters: ["solider"],
                 script: [
-                    { type: "dialogue", speaker: "솔저", text: "내가 과거에 무엇을 수사했는지 전혀 기억나지 않아. 그런데…… 내 크리스탈 잔 속 얼음 흔들리는 소리가 왜 이렇게 슬프게 울리는 걸까." }
+                    { type: "dialogue", speaker: "solider", text: "내가 과거에 무엇을 수사했는지 전혀 기억나지 않아. 그런데…… 내 크리스탈 잔 속 얼음 흔들리는 소리가 왜 이렇게 슬프게 울리는 걸까." }
                 ],
                 choices: [{ text: "기억이 포맷된 낙원에 안주합니다.", next: "RESET" }]
             },
@@ -658,7 +603,7 @@
                 environment: "인간성을 완벽히 박탈당한 채, 자아가 영도(零度)로 고정되어 소모품 경비 자산으로 개조된 자화상.",
                 characters: ["solider"],
                 script: [
-                    { type: "dialogue", speaker: "솔저", text: "포맷 완료. 나는 이제 바벨의 사냥개, 하위 제어용 CPU 부품일 뿐. 침입 의심 개체를 탐지 중입니다." }
+                    { type: "dialogue", speaker: "solider", text: "포맷 완료. 나는 이제 바벨의 사냥개, 하위 제어용 CPU 부품일 뿐. 침입 의심 개체를 탐지 중입니다." }
                 ],
                 choices: [{ text: "처음부터 다시 증명하기", next: "RESET" }]
             }
@@ -681,21 +626,10 @@
         window.addEventListener('resize', resizeCanvases);
         resizeCanvases();
 
-        // [새로운 모달 제어 시스템]
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-        }
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-        
-        // 분기도 내에서 노드 선택 시 바로 수사를 가동시키는 트리거
-        function jumpToChapter(sceneKey) {
-            closeModal('chapterOverlay');
-            startInvestigation(sceneKey);
-        }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function jumpToChapter(sceneKey) { closeModal('chapterOverlay'); startInvestigation(sceneKey); }
 
-        // 로딩 시스템 오퍼레이션
         function runSystemRecoveringSequence() {
             const screen = document.getElementById('loadingScreen');
             const bar = document.getElementById('loadingBar');
@@ -708,7 +642,6 @@
                     progress = 100;
                     clearInterval(interval);
                     bar.style.width = '100%';
-                    
                     setTimeout(() => {
                         screen.style.opacity = '0';
                         setTimeout(() => {
@@ -723,14 +656,11 @@
             }, 90);
         }
 
-        // 수사 시작 기믹 컨트롤러
         function startInvestigation(targetScene = 'S1') {
             const title = document.getElementById('titleScreen');
             const game = document.getElementById('mainGameWrapper');
-            
             triggerCyberGlitch(600);
             title.style.opacity = '0';
-            
             setTimeout(() => {
                 title.style.display = 'none';
                 game.style.display = 'block';
@@ -740,7 +670,6 @@
             }, 600);
         }
 
-        // 인게임 실시간 비주얼 효과 기믹들
         function startBloodEngine() {
             if (isBloodActive) return;
             isBloodActive = true;
@@ -812,88 +741,4 @@
             document.getElementById('statNoise').innerText = gameState.noise + "%";
         }
 
-        function renderScene(sceneKey) {
-            const scene = storyData[sceneKey];
-            if (!scene) return;
-
-            document.getElementById('sceneId').innerText = scene.id + ". " + scene.title;
-            document.getElementById('sceneMeta').innerText = scene.meta;
-            document.getElementById('environmentBox').innerText = scene.environment;
-
-            const visualArea = document.getElementById('visualArea');
-            visualArea.innerHTML = "";
-            scene.characters.forEach(char => {
-                const node = document.createElement('div'); node.className = "character-node";
-                const frame = document.createElement('div'); frame.className = "avatar-frame";
-                frame.innerHTML = `<span style="color:#444; font-size:12px;">${char}.png</span>`;
-                const nameLabel = document.createElement('span'); nameLabel.className = "char-name"; nameLabel.innerText = char.toUpperCase();
-                node.appendChild(frame); node.appendChild(nameLabel); visualArea.appendChild(node);
-            });
-
-            const scriptContent = document.getElementById('scriptContent');
-            scriptContent.innerHTML = "";
-            scene.script.forEach(paragraph => {
-                const block = document.createElement('div');
-                if (paragraph.type === "narration") { block.className = "narration"; block.innerText = paragraph.text; }
-                else if (paragraph.type === "dialogue") { block.className = "dialogue-line"; block.innerHTML = `<span class="speaker">* ${paragraph.speaker}:</span>"${paragraph.text}"`; }
-                else if (paragraph.type === "SYSTEM ALERT") { block.className = "dialogue-line"; block.innerHTML = `<span class="speaker" style="color:#ff0055;">[${paragraph.type}]:</span> ${paragraph.text}`; }
-                scriptContent.appendChild(block);
-            });
-
-            const choicesBox = document.getElementById('choicesBox');
-            choicesBox.innerHTML = "";
-            scene.choices.forEach(choice => {
-                const button = document.createElement('button'); button.className = "choice-btn"; button.innerText = choice.text;
-                button.onclick = () => handleChoice(choice); choicesBox.appendChild(button);
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function handleChoice(choice) {
-            if (choice.modifiers) {
-                for (const [stat, val] of Object.entries(choice.modifiers)) { gameState[stat] = Math.max(0, gameState[stat] + val); }
-            }
-            let nextScene = choice.next;
-
-            if (nextScene === "CHECK_S4") { nextScene = (gameState.sync + gameState.integrity >= 120) ? "S5" : "S_LOOP"; }
-            if (nextScene === "CALCULATE_ENDING") {
-                const finalScore = Math.min(gameState.sync, gameState.integrity) * 0.7 - gameState.noise * 0.3;
-                if (finalScore >= 70) nextScene = "END_A";
-                else if (finalScore >= 50) nextScene = "END_B";
-                else nextScene = "G_OVER";
-            }
-
-            if (nextScene === "RESET") {
-                gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0, currentScene: "S1" };
-                document.getElementById('mainGameWrapper').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('mainGameWrapper').style.display = 'none';
-                    document.getElementById('titleScreen').style.display = 'flex';
-                    setTimeout(() => document.getElementById('titleScreen').style.opacity = '1', 50);
-                }, 600);
-                stopBloodEngine(); triggerCyberGlitch(300);
-                document.getElementById('nodeStatus').innerText = "STANDBY"; document.getElementById('nodeStatus').style.color = 'var(--point-blue)';
-                return;
-            }
-
-            gameState.currentScene = nextScene;
-            updateDashboard();
-
-            if (nextScene === "S_LOOP" || nextScene === "G_OVER") {
-                startBloodEngine(); triggerCyberGlitch(1000);
-                document.getElementById('nodeStatus').innerText = "ALERT_DEADLOCK"; document.getElementById('nodeStatus').style.color = '#ff0055';
-            } else if (nextScene.startsWith("END_")) {
-                stopBloodEngine(); triggerCyberGlitch(1200);
-                document.getElementById('nodeStatus').innerText = "COMPILE_SUCCESS"; document.getElementById('nodeStatus').style.color = '#00ffaa';
-            } else {
-                if (nextScene !== "S3") stopBloodEngine();
-                triggerCyberGlitch(500);
-            }
-
-            setTimeout(() => renderScene(nextScene), 150);
-        }
-
-        runSystemRecoveringSequence();
-    </script>
-</body>
-</html>
+        function renderScene(scene
