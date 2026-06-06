@@ -250,7 +250,7 @@
         
         .environment-box { background: rgba(0, 0, 0, 0.04); border-left: 3px solid #7a6e55; padding: 12px 18px; margin-bottom: 25px; font-size: 14px; line-height: 1.6; color: #4a4235; }
         
-        /* 📣 [중요 변형] 캐릭터 아바타 무대 대신 큼직한 장면 일러스트 박스로 교체 */
+        /* 장면별 이미지가 크게 들어갈 영역 */
         .scene-visual-frame {
             width: 100%;
             height: 380px;
@@ -268,13 +268,14 @@
         .scene-visual-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 프레임 규격에 맞게 꽉 채움 */
+            object-fit: cover;
         }
         .scene-visual-frame .err-msg {
             color: #c93b3b;
             font-size: 13px;
             text-align: center;
             font-family: monospace;
+            padding: 20px;
         }
 
         .script-content { font-size: 16px; line-height: 1.8; color: var(--ink-black); margin-bottom: 35px; min-height: 120px; }
@@ -398,21 +399,20 @@
     </div>
 
     <script>
-        // 📣 각 장면 코드에 맞춰 'images/파일명.png' 경로를 매핑합니다.
-        // 만약 대소문자가 다르거나 파일명이 s1, s2가 아니면 이 리스트를 직접 수정하시면 됩니다.
+        // 📣 상위 폴더 first 안의 images 폴더 경로를 완벽하게 타도록 주소를 연결했습니다.
         const sceneImages = {
-            S1: "images/s1.png",
-            S2: "images/s2.png",
-            S3: "images/s3.png",
-            S4: "images/s4.png",
-            S_LOOP: "images/s_loop.png", // 루프 씬에 해당하는 이미지가 없다면 다른 파일명으로 대체 가능
-            S5: "images/s5.png",
-            S6: "images/s6.png",
-            S7: "images/s7.png",
-            S8: "images/s8.png",
-            END_A: "images/end_a.png",
-            END_B: "images/end_b.png",
-            G_OVER: "images/g_over.png"
+            S1: "first/images/s1.png",
+            S2: "first/images/s2.png",
+            S3: "first/images/s3.png",
+            S4: "first/images/s4.png",
+            S_LOOP: "first/images/s_loop.png", 
+            S5: "first/images/s5.png",
+            S6: "first/images/s6.png",
+            S7: "first/images/s7.png",
+            S8: "first/images/s8.png",
+            END_A: "first/images/end_a.png",
+            END_B: "first/images/end_b.png",
+            G_OVER: "first/images/g_over.png"
         };
 
         const storyData = {
@@ -530,7 +530,7 @@
                 id: "🍂 PARTIAL ENDING", title: "사라진 밤", meta: "상층부 최고층 '에덴 아일랜드' 펜트하우스",
                 environment: "따스한 금빛 노을이 쏟아지는 초호화 테라스.",
                 script: [
-                    { type: "dialogue", speaker: "솔저", text: "내가 과거에 무엇을 수사했는지 전혀 기억나지 않아. 그런데…… 내 크리스탈 잔 속 얼음 흔들리는 소리가 왜 이렇게 슬프게 울리는 결까." }
+                    { type: "dialogue", speaker: "솔저", text: "내가 과거에 무엇을 수사했는지 전혀 기억나지 않아. 그런데…… 내 크리스탈 잔 속 얼음 흔들리는 소리가 왜 이렇게 슬프게 울리는 걸까." }
                 ],
                 choices: [{ text: "기억이 포맷된 낙원에 안주합니다.", next: "RESET" }]
             },
@@ -654,7 +654,6 @@
             document.getElementById('statNoise').innerText = gameState.noise + "%";
         }
 
-        // 📣 [중요 수정] 현재 장면 키(sceneKey)에 매핑된 이미지를 대형 프레임에 출력하는 렌더링 함수
         function renderScene(sceneKey) {
             const scene = storyData[sceneKey];
             if (!scene) return;
@@ -663,13 +662,12 @@
             document.getElementById('sceneMeta').innerText = scene.meta;
             document.getElementById('environmentBox').innerText = scene.environment;
 
-            // sceneImages 오브젝트에서 해당 장면 코드(S1, S2 등)에 매핑된 경로를 가져옵니다.
             const visualFrame = document.getElementById('sceneVisualFrame');
             const imgPath = sceneImages[sceneKey];
 
             if (imgPath) {
-                // 이미지를 불러오고, 만약 실패(onerror)하면 에러 메시지와 함께 경로를 노출하도록 설정
-                visualFrame.innerHTML = `<img src="./${imgPath}" alt="${sceneKey}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'err-msg\'>[IMAGE NOT FOUND]<br>경로를 확인하세요: ${imgPath}</div>';">`;
+                // ./ 경로를 통해 현재 실행 위치 기준 상위 first/images/ 폴더로 조준합니다.
+                visualFrame.innerHTML = `<img src="./${imgPath}" alt="${sceneKey}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'err-msg\'>[이미지 로드 실패]<br>지정된 경로에 파일이 없습니다:<br><b>${imgPath}</b><br><br><small>(실제 깃허브 저장소에 s1.png가 아닌 s1.PNG 대문자로 올려두었는지 확인해 보세요)</small></div>';">`;
             } else {
                 visualFrame.innerHTML = `<div class='err-msg'>[NO IMAGE ASSIGNED FOR ${sceneKey}]</div>`;
             }
