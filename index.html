@@ -72,17 +72,13 @@
         }
 
         /* ==========================================
-           [2단계] 게임 타이틀 표지 배경 (first/images/ 폴더 반영)
+           [2단계] 게임 타이틀 표지
         ========================================== */
         #titleScreen {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            /* 표지 이미지 경로를 first/images/cover.png 로 잡아두었습니다 */
-            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.85)), url('first/images/cover.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-color: #000000;
             z-index: 9999;
             display: none;
             flex-direction: column;
@@ -109,12 +105,9 @@
         }
         .title-author {
             font-size: 11px;
-            color: #cccccc;
+            color: #555555;
             letter-spacing: 2px;
             margin-bottom: 45px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 3px 10px;
-            border-radius: 2px;
         }
         .title-menu {
             display: flex;
@@ -159,7 +152,7 @@
             stroke: #ffffff;
         }
 
-        /* 모달 윈도우 */
+        /* 모달 스타일 */
         .custom-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -181,88 +174,17 @@
             color: #1a1714;
             text-align: left;
         }
-        .modal-main-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0 0 15px 0;
-            letter-spacing: -0.5px;
-        }
-        .modal-divider {
-            border: none;
-            border-top: 1px solid #000000;
-            margin-bottom: 35px;
-        }
-        .prologue-desc {
-            font-size: 15px;
-            line-height: 2;
-            margin-bottom: 30px;
-            color: #2b2520;
-            word-break: keep-all;
-        }
-        .modal-close-btn {
-            width: 100%;
-            background: none;
-            border: 1px solid #000000;
-            padding: 15px;
-            font-family: 'Nanum Myeongjo', serif;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .modal-close-btn:hover {
-            background-color: #1a1714;
-            color: var(--paper-bg);
-        }
+        .modal-main-title { font-size: 24px; font-weight: 700; margin: 0 0 15px 0; letter-spacing: -0.5px; }
+        .modal-divider { border: none; border-top: 1px solid #000000; margin-bottom: 35px; }
+        .prologue-desc { font-size: 15px; line-height: 2; margin-bottom: 30px; color: #2b2520; word-break: keep-all; }
+        .modal-close-btn { width: 100%; background: none; border: 1px solid #000000; padding: 15px; font-family: 'Nanum Myeongjo', serif; font-size: 15px; cursor: pointer; transition: background 0.2s, color 0.2s; text-align: center; margin-top: 10px; }
+        .modal-close-btn:hover { background-color: #1a1714; color: var(--paper-bg); }
 
-        /* 분기 구상도 */
-        .timeline-container {
-            border: 1px dashed #8c8069;
-            background: rgba(0,0,0,0.02);
-            padding: 40px 20px;
-            margin-bottom: 35px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            position: relative;
-        }
-        .timeline-line {
-            position: absolute;
-            top: 50%; left: 10%; right: 10%;
-            height: 1px;
-            background-color: #8c9296;
-            z-index: 1;
-            transform: translateY(-24px);
-        }
-        .timeline-node {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            z-index: 2;
-            text-decoration: none;
-            color: inherit;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-family: 'Nanum Myeongjo', serif;
-            padding: 0;
-            width: 130px;
-        }
-        .node-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background-color: #ffffff;
-            border: 1px solid #707070;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s, border-color 0.2s;
-        }
+        /* 분기 구상도 타임라인 */
+        .timeline-container { border: 1px dashed #8c8069; background: rgba(0,0,0,0.02); padding: 40px 20px; margin-bottom: 35px; display: flex; justify-content: space-around; align-items: center; position: relative; }
+        .timeline-line { position: absolute; top: 50%; left: 10%; right: 10%; height: 1px; background-color: #8c9296; z-index: 1; transform: translateY(-24px); }
+        .timeline-node { display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 2; text-decoration: none; color: inherit; cursor: pointer; background: none; border: none; font-family: 'Nanum Myeongjo', serif; padding: 0; width: 130px; }
+        .node-circle { width: 44px; height: 44px; border-radius: 50%; background-color: #ffffff; border: 1px solid #707070; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s, border-color 0.2s; }
         .node-circle svg { width: 16px; height: 16px; fill: #555555; }
         .timeline-node.active .node-circle { border: 2px solid #7a1212; }
         .timeline-node.active .node-circle svg { fill: #7a1212; }
@@ -272,108 +194,100 @@
         .timeline-node:hover .node-circle { transform: scale(1.1); border-color: #000; }
 
         /* ==========================================
-           [3단계] 인게임 인터페이스 구조 (전체화면형)
+           [3단계] 인게임 인터페이스 구조
         ========================================== */
         #mainGameWrapper {
             display: none;
             opacity: 0;
             transition: opacity 0.6s ease;
-            width: 96vw;
-            max-width: 1800px;
-            margin: 20px auto;
+            width: 900px;
+            max-width: 95%;
+            margin: 40px auto;
             position: relative;
             z-index: 10;
         }
 
-        #bloodCanvas, #cyberGlitchCanvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            pointer-events: none;
-        }
+        #bloodCanvas, #cyberGlitchCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; }
         #bloodCanvas { z-index: 1; }
         #cyberGlitchCanvas { z-index: 2; display: none; }
 
         .system-dashboard {
-            background: rgba(10, 10, 12, 0.9);
+            background: rgba(10, 10, 12, 0.85);
             border: 1px solid #222;
-            padding: 18px 40px;
+            padding: 15px 25px;
             border-radius: 4px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.7);
         }
-        .stat-group { display: flex; gap: 40px; }
+        .stat-group { display: flex; gap: 25px; }
         .stat-item { display: flex; flex-direction: column; }
-        .stat-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
-        .stat-value { font-family: monospace; font-size: 20px; font-weight: bold; color: #eee; }
+        .stat-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .stat-value { font-family: monospace; font-size: 18px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
         .game-container {
             background-color: var(--paper-bg);
             border-radius: 2px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.9), inset 0 0 80px rgba(0,0,0,0.2);
-            padding: 60px 80px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.15);
+            padding: 50px 60px;
             box-sizing: border-box;
             position: relative;
             border: 1px solid #bdae8a;
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
         }
         .game-container::before {
             content: '';
             position: absolute;
-            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
             border: 1px solid rgba(122, 18, 18, 0.15);
             pointer-events: none;
         }
+        .scene-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--stamp-red); padding-bottom: 10px; margin-bottom: 30px; }
+        .scene-title { font-size: 24px; font-weight: 700; color: var(--stamp-red); letter-spacing: -0.5px; }
+        .scene-meta { font-size: 13px; font-style: italic; color: #554e3f; }
         
-        .scene-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--stamp-red); padding-bottom: 12px; margin-bottom: 35px; }
-        .scene-title { font-size: 28px; font-weight: 700; color: var(--stamp-red); letter-spacing: -0.5px; }
-        .scene-meta { font-size: 14px; font-style: italic; color: #554e3f; }
+        .environment-box { background: rgba(0, 0, 0, 0.04); border-left: 3px solid #7a6e55; padding: 12px 18px; margin-bottom: 25px; font-size: 14px; line-height: 1.6; color: #4a4235; }
         
-        .environment-box { background: rgba(0, 0, 0, 0.04); border-left: 4px solid #7a6e55; padding: 15px 25px; margin-bottom: 30px; font-size: 15px; line-height: 1.7; color: #4a4235; }
-        
-        /* 단서 파일/캐릭터 아바타 영역 */
-        .visual-area { display: flex; justify-content: center; gap: 60px; margin: 35px 0; min-height: 180px; align-items: center; }
-        .character-node { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.8s ease forwards; }
-        
-        .avatar-frame { 
-            width: 130px; 
-            height: 130px; 
-            border: 1px solid #7a6e55; 
-            background-color: rgba(0,0,0,0.05); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            position: relative; 
-            margin-bottom: 12px; 
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+        /* 📣 [중요 변형] 캐릭터 아바타 무대 대신 큼직한 장면 일러스트 박스로 교체 */
+        .scene-visual-frame {
+            width: 100%;
+            height: 380px;
+            border: 1px solid #7a6e55;
+            background-color: #111;
+            margin: 25px 0;
+            position: relative;
             overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.8s ease forwards;
         }
-        .avatar-frame img {
+        .scene-visual-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* 프레임 규격에 맞게 꽉 채움 */
         }
-        .avatar-frame::after { content: ''; position: absolute; width: 6px; height: 6px; border-top: 1px solid var(--stamp-red); border-left: 1px solid var(--stamp-red); top: 4px; left: 4px; }
-        .char-name { font-size: 14px; font-weight: bold; color: var(--ink-black); border-bottom: 1px dashed #7a6e55; padding-bottom: 2px; }
+        .scene-visual-frame .err-msg {
+            color: #c93b3b;
+            font-size: 13px;
+            text-align: center;
+            font-family: monospace;
+        }
 
-        .script-content { font-size: 18px; line-height: 1.9; color: var(--ink-black); margin-bottom: 45px; min-height: 150px; }
-        .narration { font-style: italic; color: #4a4235; margin-bottom: 22px; position: relative; padding-left: 20px; }
-        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 11px; top: 3px; }
-        .dialogue-line { margin-bottom: 16px; }
-        .speaker { font-weight: 700; color: var(--stamp-red); margin-right: 10px; }
+        .script-content { font-size: 16px; line-height: 1.8; color: var(--ink-black); margin-bottom: 35px; min-height: 120px; }
+        .narration { font-style: italic; color: #4a4235; margin-bottom: 20px; position: relative; padding-left: 15px; }
+        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 10px; top: 2px; }
+        .dialogue-line { margin-bottom: 14px; }
+        .speaker { font-weight: 700; color: var(--stamp-red); margin-right: 8px; }
 
-        .choices-box { display: flex; flex-direction: column; gap: 14px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px; }
-        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 18px 25px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 16px; color: var(--ink-black); cursor: pointer; transition: all 0.3s ease; position: relative; background-color: rgba(255,255,255,0.2); }
-        .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); padding-left: 35px; }
+        .choices-box { display: flex; flex-direction: column; gap: 12px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 25px; }
+        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 14px 20px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 15px; color: var(--ink-black); cursor: pointer; transition: all 0.3s ease; position: relative; background-color: rgba(255,255,255,0.2); }
+        .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); padding-left: 28px; }
         .choice-btn::before { content: '☞'; position: absolute; left: -10px; opacity: 0; transition: all 0.3s ease; }
-        .choice-btn:hover::before { left: 15px; opacity: 1; }
+        .choice-btn:hover::before { left: 12px; opacity: 1; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
@@ -470,36 +384,41 @@
         </div>
 
         <div class="game-container">
-            <div>
-                <div class="scene-header">
-                    <span id="sceneId" class="scene-title">로드 중...</span>
-                    <span id="sceneMeta" class="scene-meta">로드 중...</span>
-                </div>
-                <div id="environmentBox" class="environment-box">환경 로드 중...</div>
-                <div id="visualArea" class="visual-area"></div>
-                <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
+            <div class="scene-header">
+                <span id="sceneId" class="scene-title">로드 중...</span>
+                <span id="sceneMeta" class="scene-meta">로드 중...</span>
             </div>
+            <div id="environmentBox" class="environment-box">환경 로드 중...</div>
+            
+            <div id="sceneVisualFrame" class="scene-visual-frame"></div>
+            
+            <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
             <div id="choicesBox" class="choices-box"></div>
         </div>
     </div>
 
     <script>
-        /* =========================================================================
-           ★ 상대 경로 설정 (알려주신 first/images/ 폴더 내부 매핑)
-           ※ 파일 확장자가 jpg라면 아래 .png를 .jpg로 한꺼번에 바꿔주세요!
-        ========================================================================= */
-        const characterImages = {
-            solider: "first/images/solider.png",   // 주인공 솔저 이미지 경로
-            bable: "first/images/bable.png",       // 기업 바벨 이미지 경로
-            old_jack: "first/images/old_jack.png", // 조력자 올드잭 이미지 경로
-            princess: "first/images/princess.png"  // 공주들 이미지 경로
+        // 📣 각 장면 코드에 맞춰 'images/파일명.png' 경로를 매핑합니다.
+        // 만약 대소문자가 다르거나 파일명이 s1, s2가 아니면 이 리스트를 직접 수정하시면 됩니다.
+        const sceneImages = {
+            S1: "images/s1.png",
+            S2: "images/s2.png",
+            S3: "images/s3.png",
+            S4: "images/s4.png",
+            S_LOOP: "images/s_loop.png", // 루프 씬에 해당하는 이미지가 없다면 다른 파일명으로 대체 가능
+            S5: "images/s5.png",
+            S6: "images/s6.png",
+            S7: "images/s7.png",
+            S8: "images/s8.png",
+            END_A: "images/end_a.png",
+            END_B: "images/end_b.png",
+            G_OVER: "images/g_over.png"
         };
 
         const storyData = {
             S1: {
                 id: "🎬 서막", title: "바벨의 그림자", meta: "바벨 코프 본사 120층 최고급 펜트하우스",
                 environment: "바벨 코프 본사 120층 최고급 펜트하우스 내부. 흑색 대리석 바닥, 통창 너머 글자나 간판이 없는 밤의 마천루 야경, 창문에 흘러내리는 산성비.",
-                characters: ["solider", "bable"],
                 script: [
                     { type: "narration", text: "솔저는 관자놀이에 박힌 신경 링크 단자를 가죽 장갑 낀 손으로 거칠게 쓸어내린다. 푸르스름한 광축이 뿜어져 나오며 바벨의 홀로그램 실루엣이 나타난다." },
                     { type: "dialogue", speaker: "바벨", text: "자네의 그 텅 빈 머릿속을 채워줄 기억 소스가 어디에 저장되어 있는지 아직도 못 찾았나 보군, 솔저. 내 지시만 따른다면 그 기억을 돌려받는 것은 시간문제다." },
@@ -514,7 +433,6 @@
             S2: {
                 id: "🎬 챕터 1", title: "이동: 하층 지구로의 추락", meta: "초고속 관형 마그네틱 리프트 -> 구룡 지구 골목",
                 environment: "상층부와 하층 지구를 연결하는 초고속 관형 마그네틱 리프트 안, 그리고 이어지는 구룡 지구 가로등 골목. 사방을 짓누르는 거친 네온사인 조명.",
-                characters: ["solider"],
                 script: [
                     { type: "narration", text: "솔저는 바벨의 펜트하우스를 나와 수직으로 하강하는 리프트에 몸을 싣는다. 기압차가 심해지자 침을 삼키며, 낡은 가죽 코트 깃을 올린다." },
                     { type: "dialogue", speaker: "솔저", text: "상층부의 가짜 인공 산소 냄새는 10초 만에 끝나는군. 리프트가 아래로 처박힐 때마다 시야가 어두워지고 차가운 매연 냄새가 진동을 해." }
@@ -527,7 +445,6 @@
             S3: {
                 id: "🎬 챕터 2", title: "거래: 구룡 지구의 낡은 조력자", meta: "올드 잭의 지하 정비소 겸 비밀 안가",
                 environment: "구룡 지구 최하층 구역, 지하 통로 끝에 숨겨진 올드 잭의 지하 정비소. 깜빡이는 구형 형광등, 해체된 드론 잔해와 녹슨 기판들이 가득하다.",
-                characters: ["solider", "old_jack"],
                 script: [
                     { type: "narration", text: "철문을 밀고 들어선다. 기름때 절은 캔버스 앞치마를 두른 올드 잭이 철제 의자에 깊숙이 앉아 다가오는 솔저를 노려본다." },
                     { type: "dialogue", speaker: "올드 잭", text: "바벨의 사냥개 세션인가, 솔저? 아니면 기억을 잃더니 드디어 완전히 미쳐버린 건가? 내 다이브 장비와 리스크를 빌려주는 대가로 넌 내게 뭘 줄 건가?" }
@@ -540,7 +457,6 @@
             S4: {
                 id: "🎬 시스템 관문", title: "진입: 가상 에덴의 장막", meta: "에덴 중앙 서버 데이터 게이트 앞",
                 environment: "에덴 중앙 서버 입구, 거대한 데이터 게이트 앞. 검은 매트릭스 공간 and 시안 블루빛 회로 성벽. 방화벽 경고음이 피질을 직접 찌른다.",
-                characters: ["solider"],
                 script: [
                     { type: "narration", text: "시안 블루 회로들이 일제히 핏빛 선홍색으로 반전되며 시스템 딥 스캔이 시작된다. 솔저는 숨이 턱 막히는 압박감에 오한을 느낀다." }
                 ],
@@ -552,10 +468,9 @@
             S_LOOP: {
                 id: "🔄 LOOP SYSTEM", title: "시스템 데드락 / 루프 장치", meta: "서버 역전류 오작동 -> 현실 강제 회귀",
                 environment: "보안 프로토콜 오작동으로 관자놀이가 타들어 가며 의식이 튕겨 나간다.",
-                characters: ["solider", "old_jack"],
                 script: [
                     { type: "SYSTEM ALERT", text: "경고: 비인가 세션 감지. 자아 시퀀스 포맷을 시작합니다." },
-                    { type: "dialogue", speaker: "old_jack", text: "야, 이 미친놈아! 하마터면 전두엽이 통째로 구워질 뻔했다고! 프로토콜 제대로 다시 세팅해!" }
+                    { type: "dialogue", speaker: "올드 잭", text: "야, 이 미친놈아! 하마터면 전두엽이 통째로 구워질 뻔했다고! 프로토콜 제대로 다시 세팅해!" }
                 ],
                 choices: [
                     { text: "타들어 가는 피질을 부여잡고, 현실에서 재링크를 시도한다.", next: "S3", modifiers: { memory: -15 } }
@@ -564,7 +479,6 @@
             S5: {
                 id: "🎬 챕터 3", title: "조우: 부서진 영혼의 데이터", meta: "격리벽 안쪽 순수한 무(無)의 공간",
                 environment: "격리벽 안쪽, 순수한 무(無)의 공간. 중력을 잃고 부유하는 깨진 거울 조각 같은 데이터 파편들. 소녀의 울음소리가 메아리친다.",
-                characters: ["solider", "princess"],
                 script: [
                     { type: "공주들의 부서진 의식", speaker: "공주들", text: "아버지…… 왜 우릴 차가운 기계의 부품으로 만든 건가요? 제발…… 이 고통스러운 무한 연산 루프를 멈춰줘요." }
                 ],
@@ -576,7 +490,6 @@
             S6: {
                 id: "🎬 관문 시스템", title: "역추적의 공포", meta: "가상 제어 회랑",
                 environment: "데이터 변형 구역, 가상 제어 회랑. 사방의 격자무늬 가상 벽면이 조여들고, 공중에서 수많은 붉은색 광학 렌즈 모양 추적 엔진들이 일제히 개안한다.",
-                characters: ["solider"],
                 script: [
                     { type: "narration", text: "솔저는 역전류 피드백으로 눈앞의 시야가 오색 픽셀로 깨어지자 가상 바닥에 한쪽 무릎을 꿇는다." }
                 ],
@@ -588,7 +501,6 @@
             S7: {
                 id: "🎬 종막 직전", title: "관계: 신뢰의 무게", meta: "에덴 서버 깊은 곳 격리 챔버 내부",
                 environment: "에덴 서버 깊은 곳, 격리 챔버 내부. 거대하고 투명한 네온 냉각 기둥 내부에서 연보랏빛 의식 코어 두 개가 액체 속에서 회전한다.",
-                characters: ["solider"],
                 script: [
                     { type: "narration", text: "솔저가 다가갈 때마다 바닥에 하얀 데이터 파동이 퍼진다. 그는 기둥의 두꺼운 유리 표면에 가죽 장갑 낀 손을 얹는다." }
                 ],
@@ -599,7 +511,6 @@
             S8: {
                 id: "🎬 에필로그", title: "데이터 코어의 진실 및 결산", meta: "에덴의 절대 성역 'Deep_Core' 터미널 앞 거대한 투명 유리 방",
                 environment: "에덴의 절대 성역, 'Deep_Core' 터미널 앞 거대한 투명 유리 방. 발밑으로 네오-코리아의 밤 야경이 미니어처처럼 보인다.",
-                characters: ["solider"],
                 script: [
                     { type: "narration", text: "마침내 최종 컴파일러 엔진 앞에 도달한 솔저는 노이즈 잔상과 상처로 가득 찬 손으로 수사 아카이브와 공주들의 데이터 도킹을 실행한다." }
                 ],
@@ -610,27 +521,24 @@
             END_A: {
                 id: "🏆 TRUE ENDING", title: "도시의 해방", meta: "현실의 지하 정비소 -> 네오 코리아 전역",
                 environment: "도시 전체를 뒤덮은 황금빛과 시안 블루의 데이터 해방 전류.",
-                characters: ["solider", "old_jack"],
                 script: [
-                    { type: "dialogue", speaker: "old_jack", text: "봐라, 창밖 구룡 지구와 마천루의 모든 전광판이 공주들의 비명과 추악한 실험 로그로 뒤덮지고 있어! 진실은 마침내 증명됐다!" }
+                    { type: "dialogue", speaker: "올드 잭", text: "봐라, 창밖 구룡 지구와 마천루의 모든 전광판이 공주들의 비명과 추악한 실험 로그로 뒤덮지고 있어! 진실은 마침내 증명됐다!" }
                 ],
                 choices: [{ text: "수사를 마칩니다. (스태프 롤 감상)", next: "RESET" }]
             },
             END_B: {
                 id: "🍂 PARTIAL ENDING", title: "사라진 밤", meta: "상층부 최고층 '에덴 아일랜드' 펜트하우스",
                 environment: "따스한 금빛 노을이 쏟아지는 초호화 테라스.",
-                characters: ["solider"],
                 script: [
-                    { type: "dialogue", speaker: "solider", text: "내가 과거에 무엇을 수사했는지 전혀 기억나지 않아. 그런데…… 내 크리스탈 잔 속 얼음 흔들리는 소리가 왜 이렇게 슬프게 울리는 걸까." }
+                    { type: "dialogue", speaker: "솔저", text: "내가 과거에 무엇을 수사했는지 전혀 기억나지 않아. 그런데…… 내 크리스탈 잔 속 얼음 흔들리는 소리가 왜 이렇게 슬프게 울리는 결까." }
                 ],
                 choices: [{ text: "기억이 포맷된 낙원에 안주합니다.", next: "RESET" }]
             },
             G_OVER: {
                 id: "💀 GAME OVER", title: "바벨의 사냥개", meta: "바벨 코프 지하 비밀 서버실 복도",
                 environment: "인간성을 완벽히 박탈당한 채, 자아가 영도(零度)로 고정되어 소모품 경비 자산으로 개조된 자화상.",
-                characters: ["solider"],
                 script: [
-                    { type: "dialogue", speaker: "solider", text: "포맷 완료. 나는 이제 바벨의 사냥개, 하위 제어용 CPU 부품일 뿐. 침입 의심 개체를 탐지 중입니다." }
+                    { type: "dialogue", speaker: "솔저", text: "포맷 완료. 나는 이제 바벨의 사냥개, 하위 제어용 CPU 부품일 뿐. 침입 의심 개체를 탐지 중입니다." }
                 ],
                 choices: [{ text: "처음부터 다시 증명하기", next: "RESET" }]
             }
@@ -666,43 +574,31 @@
             const interval = setInterval(() => {
                 progress += Math.floor(Math.random() * 8) + 3;
                 if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    bar.style.width = '100%';
+                    progress = 100; clearInterval(interval); bar.style.width = '100%';
                     setTimeout(() => {
                         screen.style.opacity = '0';
                         setTimeout(() => {
-                            screen.style.display = 'none';
-                            title.style.display = 'flex';
+                            screen.style.display = 'none'; title.style.display = 'flex';
                             setTimeout(() => title.style.opacity = '1', 50);
                         }, 600);
                     }, 400);
-                } else {
-                    bar.style.width = progress + '%';
-                }
+                } else { bar.style.width = progress + '%'; }
             }, 90);
         }
 
         function startInvestigation(targetScene = 'S1') {
             const title = document.getElementById('titleScreen');
             const game = document.getElementById('mainGameWrapper');
-            triggerCyberGlitch(600);
-            title.style.opacity = '0';
+            triggerCyberGlitch(600); title.style.opacity = '0';
+            
             setTimeout(() => {
-                title.style.display = 'none';
-                game.style.display = 'block';
-                updateDashboard();
-                renderScene(targetScene);
+                title.style.display = 'none'; game.style.display = 'block';
+                updateDashboard(); renderScene(targetScene);
                 setTimeout(() => game.style.opacity = '1', 50);
             }, 600);
         }
 
-        function startBloodEngine() {
-            if (isBloodActive) return;
-            isBloodActive = true;
-            bloodInterval = setInterval(() => drawBloodSplatter(), 180);
-        }
-
+        function startBloodEngine() { if (isBloodActive) return; isBloodActive = true; bloodInterval = setInterval(() => drawBloodSplatter(), 180); }
         function drawBloodSplatter() {
             if (!isBloodActive) return;
             bloodCtx.save();
@@ -723,34 +619,24 @@
 
                 const dropGrad = bloodCtx.createRadialGradient(dropX, dropY, dropRadius * 0.1, dropX, dropY, dropRadius);
                 dropGrad.addColorStop(0, '#300000'); dropGrad.addColorStop(0.8, '#990000'); dropGrad.addColorStop(1, 'transparent');
-                bloodCtx.fillStyle = dropGrad;
-                bloodCtx.beginPath();
+                bloodCtx.fillStyle = dropGrad; bloodCtx.beginPath();
                 for(let j=0; j<=6; j++){
-                    const dAngle = (j / 6) * Math.PI * 2;
-                    const dR = dropRadius * (0.7 + Math.random() * 0.5);
+                    const dAngle = (j / 6) * Math.PI * 2; const dR = dropRadius * (0.7 + Math.random() * 0.5);
                     bloodCtx.lineTo(dropX + Math.cos(dAngle) * dR, dropY + Math.sin(dAngle) * dR);
                 }
                 bloodCtx.closePath(); bloodCtx.fill();
             }
             bloodCtx.restore();
         }
-
-        function stopBloodEngine() {
-            isBloodActive = false;
-            if (bloodInterval) { clearInterval(bloodInterval); bloodInterval = null; }
-            bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height);
-        }
+        function stopBloodEngine() { isBloodActive = false; if (bloodInterval) { clearInterval(bloodInterval); bloodInterval = null; } bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height); }
 
         function triggerCyberGlitch(duration = 600) {
-            glitchCanvas.style.display = 'block';
-            let glitchTime = 0;
+            glitchCanvas.style.display = 'block'; let glitchTime = 0;
             const interval = setInterval(() => {
                 glitchCtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
                 for(let i=0; i<15; i++) {
-                    const y = Math.random() * glitchCanvas.height;
-                    const h = 5 + Math.random() * 40;
-                    const w = 150 + Math.random() * (glitchCanvas.width - 150);
-                    const x = Math.random() * (glitchCanvas.width - w);
+                    const y = Math.random() * glitchCanvas.height; const h = 5 + Math.random() * 40;
+                    const w = 150 + Math.random() * (glitchCanvas.width - 150); const x = Math.random() * (glitchCanvas.width - w);
                     glitchCtx.fillStyle = Math.random() < 0.5 ? 'rgba(0, 242, 255, 0.25)' : 'rgba(255, 0, 85, 0.25)';
                     glitchCtx.fillRect(x, y, w, h);
                 }
@@ -758,7 +644,8 @@
                 if(glitchTime >= duration) { clearInterval(interval); glitchCtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height); glitchCanvas.style.display = 'none'; }
             }, 40);
         }
-function updateDashboard() {
+
+        function updateDashboard() {
             document.getElementById('statMemory').innerText = gameState.memory + "%";
             document.getElementById('statSync').innerText = gameState.sync + "%";
             document.getElementById('statCorruption').innerText = gameState.corruption + "%";
@@ -767,6 +654,7 @@ function updateDashboard() {
             document.getElementById('statNoise').innerText = gameState.noise + "%";
         }
 
+        // 📣 [중요 수정] 현재 장면 키(sceneKey)에 매핑된 이미지를 대형 프레임에 출력하는 렌더링 함수
         function renderScene(sceneKey) {
             const scene = storyData[sceneKey];
             if (!scene) return;
@@ -775,19 +663,16 @@ function updateDashboard() {
             document.getElementById('sceneMeta').innerText = scene.meta;
             document.getElementById('environmentBox').innerText = scene.environment;
 
-            const visualArea = document.getElementById('visualArea');
-            visualArea.innerHTML = "";
-            scene.characters.forEach(char => {
-                const node = document.createElement('div'); node.className = "character-node";
-                const frame = document.createElement('div'); frame.className = "avatar-frame";
-                
-                // characterImages 매핑 객체에서 지정된 경로를 주입합니다.
-                const imgSrc = characterImages[char] || "first/images/solider.png";
-                frame.innerHTML = `<img src="${imgSrc}" alt="${char}" onerror="this.style.display='none'; this.parentNode.innerText='이미지 누락';">`;
-                
-                const nameLabel = document.createElement('span'); nameLabel.className = "char-name"; nameLabel.innerText = char.toUpperCase();
-                node.appendChild(frame); node.appendChild(nameLabel); visualArea.appendChild(node);
-            });
+            // sceneImages 오브젝트에서 해당 장면 코드(S1, S2 등)에 매핑된 경로를 가져옵니다.
+            const visualFrame = document.getElementById('sceneVisualFrame');
+            const imgPath = sceneImages[sceneKey];
+
+            if (imgPath) {
+                // 이미지를 불러오고, 만약 실패(onerror)하면 에러 메시지와 함께 경로를 노출하도록 설정
+                visualFrame.innerHTML = `<img src="./${imgPath}" alt="${sceneKey}" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'err-msg\'>[IMAGE NOT FOUND]<br>경로를 확인하세요: ${imgPath}</div>';">`;
+            } else {
+                visualFrame.innerHTML = `<div class='err-msg'>[NO IMAGE ASSIGNED FOR ${sceneKey}]</div>`;
+            }
 
             const scriptContent = document.getElementById('scriptContent');
             scriptContent.innerHTML = "";
