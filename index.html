@@ -69,13 +69,12 @@
         }
 
         /* ==========================================
-           [2단계] 게임 타이틀 표지
+           [2단계] 게임 타이틀 표지 (배경 동영상 지원형)
         ========================================== */
         #titleScreen {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background-color: #000000;
             z-index: 9999;
             display: none;
             flex-direction: column;
@@ -83,6 +82,27 @@
             align-items: center;
             opacity: 0;
             transition: opacity 0.6s ease;
+            background-color: #000;
+        }
+        
+        /* 🎬 표지 전용 배경 동영상 스타일 */
+        .title-video-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.6; /* 글자가 잘 보이도록 동영상 배경 살짝 어둡게 처리 */
+        }
+        
+        .title-content-box {
+            position: relative;
+            z-index: 2; /* 동영상보다 위에 뜨도록 설정 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
         .title-main {
             font-size: 64px;
@@ -114,7 +134,7 @@
             position: relative;
         }
         .start-btn {
-            background: none;
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid #ffffff;
             color: #ffffff;
             padding: 12px 35px;
@@ -123,6 +143,7 @@
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.3s ease;
+            backdrop-filter: blur(3px);
         }
         .start-btn:hover {
             background-color: #ffffff;
@@ -192,7 +213,7 @@
         .timeline-node:hover .node-circle { transform: scale(1.1); border-color: #000; }
 
         /* ==========================================
-           [3단계] 인게임 인터페이스 화면 (완전 화면 고정형)
+           [3단계] 인게임 인터페이스 화면
         ========================================== */
         #mainGameWrapper {
             display: none;
@@ -204,14 +225,13 @@
             height: 100vh;
             z-index: 10;
             box-sizing: border-box;
-            padding: 25px; /* 모니터 가장자리 여백 */
+            padding: 25px;
         }
 
         #bloodCanvas, #cyberGlitchCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; }
         #bloodCanvas { z-index: 1; }
         #cyberGlitchCanvas { z-index: 2; display: none; }
 
-        /* 📜 [교정] 글상자(서류)가 이제 화면 좌우/상하를 가득 채우는 거대한 판이 됩니다. */
         .game-container {
             width: 100%;
             height: 100%;
@@ -221,14 +241,11 @@
             border: 1px solid #bdae8a;
             box-sizing: border-box;
             position: relative;
-            
-            /* 내부 좌측(사진)과 우측(텍스트)을 나누는 정렬 시스템 */
             display: flex;
             flex-direction: row; 
             overflow: hidden;
         }
         
-        /* 테두리 붉은 실선 장식 */
         .game-container::before {
             content: '';
             position: absolute;
@@ -238,7 +255,7 @@
             z-index: 5;
         }
 
-        /* 🖼️ [왼쪽] 사진 구역 - 글상자 왼쪽의 절반 이상(60%)을 고정 차지 */
+        /* 🖼️ [왼쪽] 동영상 무조건 고정 구역 (60%) */
         .left-visual-stage {
             flex: 6;
             height: 100%;
@@ -252,14 +269,16 @@
             width: 100%;
             height: 100%;
         }
-        .scene-visual-frame img {
+        
+        /* 🎬 인게임 수사 영상 전용 재생 스타일 */
+        .scene-visual-frame video {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 일그러짐 없이 비율 유지하며 꽉 채움 */
+            object-fit: cover; /* 찌그러짐 없이 화면 꽉 채움 */
             display: block;
         }
 
-        /* 💬 [오른쪽] 스탯 + 글 구역 - 글상자 우측(40%) 공간 고정 차지 */
+        /* 💬 [오른쪽] 스탯 + 글 구역 (40%) */
         .right-interface-stage {
             flex: 4;
             height: 100%;
@@ -271,7 +290,6 @@
             z-index: 2;
         }
 
-        /* 사이버네틱 대시보드 스탯창 */
         .system-dashboard {
             background: rgba(18, 16, 14, 0.96);
             border: 1px solid #4a3e2e;
@@ -292,12 +310,11 @@
         .stat-value { font-family: monospace; font-size: 14px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
-        /* 대사 서류 내용 텍스트 래퍼 */
         .text-content-wrapper {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* 내용이 길어지면 우측 영역 안에서만 스롤 생김 */
+            overflow-y: auto;
             padding-right: 5px;
         }
         
@@ -322,7 +339,6 @@
 </head>
 <body>
 
-    <!-- [1단계] 로딩 스크린 -->
     <div id="loadingScreen">
         <div class="loading-text">S Y S T E M   R E C O V E R I N G</div>
         <div class="loading-bar-container">
@@ -330,28 +346,32 @@
         </div>
     </div>
 
-    <!-- [2단계] 게임 타이틀 표지 -->
     <div id="titleScreen">
-        <div class="title-main">UNLOGGED</div>
-        <div class="title-sub">사라진 밤의 증명</div>
-        <div class="title-author">25730022 김지은</div>
-        <div class="title-menu">
-            <button class="start-btn" onclick="startInvestigation('S1')">수사 시작하기</button>
-            <div class="title-icon-wrapper">
-                <svg class="title-icon" viewBox="0 0 24 24" onclick="openModal('prologueOverlay')">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </div>
-            <div class="title-icon-wrapper">
-                <svg class="title-icon" viewBox="0 0 24 24" onclick="openModal('chapterOverlay')">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
+        <video class="title-video-bg" autoplay loop muted playsinline>
+            <source src="movies/cover_동영상.mp4" type="video/mp4">
+        </video>
+        
+        <div class="title-content-box">
+            <div class="title-main">UNLOGGED</div>
+            <div class="title-sub">사라진 밤의 증명</div>
+            <div class="title-author">25730022 김지은</div>
+            <div class="title-menu">
+                <button class="start-btn" onclick="startInvestigation('S1')">수사 시작하기</button>
+                <div class="title-icon-wrapper">
+                    <svg class="title-icon" viewBox="0 0 24 24" onclick="openModal('prologueOverlay')">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="title-icon-wrapper">
+                    <svg class="title-icon" viewBox="0 0 24 24" onclick="openModal('chapterOverlay')">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 모달창 영역 -->
     <div id="prologueOverlay" class="custom-overlay" onclick="closeModal('prologueOverlay')">
         <div class="paper-modal-box" onclick="event.stopPropagation()">
             <div class="modal-main-title">[사건 분석 서막]</div>
@@ -395,21 +415,15 @@
     <canvas id="bloodCanvas"></canvas>
     <canvas id="cyberGlitchCanvas"></canvas>
 
-    <!-- [3단계] 인게임 인터페이스 화면 -->
     <div id="mainGameWrapper">
-        
-        <!-- 📜 화면 전체용으로 확장된 단 하나의 글상자(Container) -->
         <div class="game-container">
             
-            <!-- 🖼️ [왼쪽] 사진 무조건 고정 (전체의 60% 차지) -->
             <div class="left-visual-stage">
                 <div id="sceneVisualFrame" class="scene-visual-frame"></div>
             </div>
 
-            <!-- 💬 [오른쪽] 대시보드와 대사 전용 구역 (전체의 40% 차지) -->
             <div class="right-interface-stage">
                 
-                <!-- 상단 사이버 계기판 대시보드 -->
                 <div class="system-dashboard">
                     <div class="stat-group">
                         <div class="stat-item"><span class="stat-label">Memory</span><span id="statMemory" class="stat-value">100%</span></div>
@@ -425,7 +439,6 @@
                     </div>
                 </div>
 
-                <!-- 텍스트/선택지 통합 서류 출력함 -->
                 <div class="text-content-wrapper">
                     <div class="scene-header">
                         <span id="sceneId" class="scene-title">로드 중...</span>
@@ -437,26 +450,23 @@
                     <div id="choicesBox" class="choices-box"></div>
                 </div>
 
-            </div> <!-- right-interface-stage 끝 -->
-
-        </div> <!-- game-container 끝 -->
-    </div>
+            </div> </div> </div>
 
     <script>
-        // 스토리 로직 및 시스템 처리 스크립트 (기존과 무결성 완벽 연동)
-        const sceneImages = {
-            S1: "images/s1.png",
-            S2: "images/s2.png",
-            S3: "images/s3.png",
-            S4: "images/s4.png",
-            S_LOOP: "images/s4.png",
-            S5: "images/s5.png",
-            S6: "images/s6.png",
-            S7: "images/s7.png",
-            S8: "images/s8.png",
-            END_A: "images/End_A.png",
-            END_B: "images/End_B.png",
-            G_OVER: "images/End_C.png"
+        // 🎬 [수정] 이미지 경로에서 동영상 파일 경로 데이터베이스로 완벽 갱신
+        const sceneMovies = {
+            S1: "movies/s1_동영상.mp4", 
+            S2: "movies/s2_동영상.mp4", 
+            S3: "movies/s3_동영상.mp4", 
+            S4: "movies/s4_동영상.mp4",
+            S_LOOP: "movies/s4_동영상.mp4", 
+            S5: "movies/s5_동영상.mp4", 
+            S6: "movies/s6_동영상.mp4", 
+            S7: "movies/s7_동영상.mp4", // S7용 영상이 따로 누락되었다면 S6나 S8 동영상을 백업 경로로 쓰셔도 좋습니다.
+            S8: "movies/s8_동영상.mp4", 
+            END_A: "movies/s8_동영상.mp4", 
+            END_B: "movies/s8_동영상.mp4", 
+            G_OVER: "movies/s4_동영상.mp4"
         };
 
         const storyData = {
@@ -708,6 +718,7 @@
             }
         }
 
+        // 🎬 [수정] 이미지가 아닌 <video> 태그를 생성하여 동영상을 재생하는 로직으로 변경
         function renderScene(sceneKey) {
             gameState.currentScene = sceneKey;
             const scene = storyData[sceneKey];
@@ -723,14 +734,22 @@
             document.getElementById('sceneMeta').innerText = scene.meta;
             document.getElementById('environmentBox').innerText = scene.environment;
 
+            // 🎬 동영상 재생 프레임 제어
             const visualFrame = document.getElementById('sceneVisualFrame');
             visualFrame.innerHTML = '';
-            if (sceneImages[sceneKey]) {
-                const img = document.createElement('img');
-                img.src = sceneImages[sceneKey];
-                img.alt = scene.title;
-                img.onerror = () => { visualFrame.innerHTML = `<span style="color:#7a1212; display:block; padding:20px;">[⚠️ 이미지 소스 누락]</span>`; };
-                visualFrame.appendChild(img);
+            
+            if (sceneMovies[sceneKey]) {
+                const video = document.createElement('video');
+                video.src = sceneMovies[sceneKey];
+                video.autoplay = true;
+                video.loop = true;
+                video.muted = true;
+                video.setAttribute('playsinline', ''); // 모바일 환경 대비 보정
+                
+                video.onerror = () => { 
+                    visualFrame.innerHTML = `<span style="color:#7a1212; display:block; padding:20px;">[⚠️ 동영상 파일 소스 누락: ${sceneMovies[sceneKey]}]</span>`; 
+                };
+                visualFrame.appendChild(video);
             }
 
             const scriptBox = document.getElementById('scriptContent');
