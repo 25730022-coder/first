@@ -69,7 +69,7 @@
         }
 
         /* ==========================================
-           [2단계] 게임 타이틀 표지
+           [2단계] 게임 타이틀 표지 (네모 박스 완전 제거 상태)
         ========================================== */
         #titleScreen {
             position: fixed;
@@ -94,7 +94,7 @@
             transform: translate(-50%, -50%);
             object-fit: cover;
             z-index: 1;
-            opacity: 1; /* ✨ 원본 밝기 유지 */
+            opacity: 1;
         }
         
         .title-content-box {
@@ -105,6 +105,14 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            background: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: none !important;
+            padding: 0;
+            width: auto;
+            height: auto;
         }
         
         .title-main {
@@ -112,7 +120,7 @@
             font-weight: bold;
             color: #ffffff;
             letter-spacing: 12px;
-            text-shadow: 0 0 20px rgba(0, 242, 255, 0.6), 0 0 40px rgba(0, 242, 255, 0.3);
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 242, 255, 0.6);
             margin-bottom: 15px;
             font-family: 'Times New Roman', serif;
         }
@@ -120,16 +128,16 @@
             font-size: 20px;
             color: var(--point-blue);
             letter-spacing: 8px;
-            text-shadow: var(--neon-glow);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), var(--neon-glow);
             margin-bottom: 30px;
         }
         .title-author {
-            font-size: 13px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 700;
             color: #ffffff;
             letter-spacing: 3px;
-            margin-bottom: 40px;
-            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+            margin-bottom: 45px;
+            text-shadow: 0 0 12px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 0.8);
         }
         .title-menu {
             display: flex;
@@ -147,11 +155,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
         .start-btn:hover {
             background-color: #ffffff;
             color: #000000;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
         }
         .title-icon-wrapper {
             position: relative;
@@ -165,7 +174,7 @@
             fill: none;
             stroke: var(--point-blue);
             stroke-width: 2;
-            filter: drop-shadow(0 0 4px rgba(0, 242, 255, 0.8));
+            filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 242, 255, 0.8));
             cursor: pointer;
             transition: transform 0.2s, stroke 0.2s;
         }
@@ -214,7 +223,7 @@
         .node-subtitle { font-size: 10px; color: #777267; }
 
         /* ==========================================
-           [3단계] 인게임 인터페이스 화면 (비율 85% : 15%)
+           [3단계] 인게임 인터페이스 화면 (★65% : 35% 검증완료)
         ========================================== */
         #mainGameWrapper {
             display: none;
@@ -247,9 +256,9 @@
             overflow: hidden;
         }
 
-        /* 🎬 [왼쪽] 대형 동영상 수사 구역 (85%) */
+        /* 비주얼 가로 65% */
         .left-visual-stage {
-            flex: 8.5; 
+            flex: 6.5; 
             height: 100%;
             position: relative;
             background-color: #000000; 
@@ -278,31 +287,30 @@
             display: block;
         }
 
-        /* 💬 [오른쪽] 컴팩트 대사 및 스탯 정보창 구역 (15%) */
+        /* 텍스트창 가로 35% */
         .right-interface-stage {
-            flex: 1.5; 
+            flex: 3.5; 
             height: 100%;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            padding: 15px 12px;
-            gap: 12px;
+            padding: 20px 18px;
+            gap: 15px;
             z-index: 2;
             background-color: #ded3b8; 
             overflow: hidden;
         }
 
-        /* ✨ 인게임 상시 노출 게임 제목 스타일 */
         .ingame-game-title {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
             color: #3a332a;
             text-align: center;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
             cursor: pointer;
             transition: color 0.2s ease, text-shadow 0.2s ease;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
         .ingame-game-title:hover {
             color: var(--stamp-red);
@@ -312,20 +320,20 @@
         .system-dashboard {
             background: rgba(18, 16, 14, 0.98);
             border: 1px solid #4a3e2e;
-            padding: 10px;
+            padding: 12px;
             border-radius: 3px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .stat-group { 
             display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 6px; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
         }
         .stat-item { display: flex; flex-direction: column; }
-        .stat-label { font-size: 9px; color: #a5937d; text-transform: uppercase; }
-        .stat-value { font-family: monospace; font-size: 11px; font-weight: bold; color: #eee; }
+        .stat-label { font-size: 10px; color: #a5937d; text-transform: uppercase; }
+        .stat-value { font-family: monospace; font-size: 12px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
         .text-content-wrapper {
@@ -335,20 +343,20 @@
             overflow-y: auto;
         }
         
-        .scene-header { border-bottom: 1px solid var(--stamp-red); padding-bottom: 4px; margin-bottom: 10px; }
-        .scene-title { font-size: 13px; font-weight: 700; color: var(--stamp-red); display: block; }
-        .scene-meta { font-size: 10px; font-style: italic; color: #554e3f; display: block; margin-top: 2px; }
+        .scene-header { border-bottom: 1px solid var(--stamp-red); padding-bottom: 6px; margin-bottom: 12px; }
+        .scene-title { font-size: 15px; font-weight: 700; color: var(--stamp-red); display: block; }
+        .scene-meta { font-size: 11px; font-style: italic; color: #554e3f; display: block; margin-top: 3px; }
         
-        .environment-box { background: rgba(0, 0, 0, 0.05); border-left: 2px solid #7a6e55; padding: 8px; margin-bottom: 12px; font-size: 11px; line-height: 1.5; color: #4a4235; word-break: keep-all; }
+        .environment-box { background: rgba(0, 0, 0, 0.05); border-left: 3px solid #7a6e55; padding: 10px; margin-bottom: 15px; font-size: 12px; line-height: 1.6; color: #4a4235; word-break: keep-all; }
         
-        .script-content { font-size: 12px; line-height: 1.6; color: var(--ink-black); margin-bottom: 15px; flex-grow: 1; overflow-y: auto; padding-right: 4px; }
-        .narration { font-style: italic; color: #554e3f; margin-bottom: 8px; padding-left: 8px; position: relative; }
-        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 7px; top: 3px; }
-        .dialogue-line { margin-bottom: 8px; }
+        .script-content { font-size: 13px; line-height: 1.7; color: var(--ink-black); margin-bottom: 15px; flex-grow: 1; overflow-y: auto; padding-right: 4px; }
+        .narration { font-style: italic; color: #554e3f; margin-bottom: 10px; padding-left: 10px; position: relative; }
+        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 7px; top: 4px; }
+        .dialogue-line { margin-bottom: 10px; }
         .speaker { font-weight: 700; color: var(--stamp-red); }
 
-        .choices-box { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid rgba(0,0,0,0.12); padding-top: 10px; margin-top: auto; }
-        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 10px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 11px; color: var(--ink-black); cursor: pointer; transition: all 0.2s ease; background-color: rgba(255,255,255,0.4); word-break: keep-all; }
+        .choices-box { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(0,0,0,0.12); padding-top: 12px; margin-top: auto; }
+        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 12px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 12px; color: var(--ink-black); cursor: pointer; transition: all 0.2s ease; background-color: rgba(255,255,255,0.4); word-break: keep-all; }
         .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); }
     </style>
 </head>
@@ -364,7 +372,8 @@
 
     <!-- [2단계] 게임 타이틀 표지 -->
     <div id="titleScreen">
-        <video class="title-video-bg" autoplay loop muted playsinline>
+        <!-- 오디오 음소거 정책 우회를 위해 id 부여 및 처음에만 무음 재생 -->
+        <video id="titleVideo" class="title-video-bg" autoplay loop muted playsinline>
             <source src="movies/cover_동영상.mp4" type="video/mp4">
         </video>
         
@@ -442,7 +451,6 @@
             </div>
 
             <div class="right-interface-stage">
-                <!-- ✨ 인게임 우측 최상단에 상시 노출되는 동화 제목 (클릭 시 표지로 복귀) -->
                 <div class="ingame-game-title" onclick="backToTitle()" title="클릭하면 표지 화면으로 돌아갑니다">
                     UNLOGGED: 사라진 밤의 증명
                 </div>
@@ -478,21 +486,11 @@
     </div>
 
     <script>
-       const sceneMovies = {
-            cover: "movies/cover_동영상.mp4",
-            S1: "movies/s1_동영상.mp4",
-            S2: "movies/s2_동영상.mp4",
-            S3: "movies/s3_동영상.mp4", 
-            S4: "movies/s4_동영상.mp4", 
-            S_LOOP: "movies/s4_동영상.mp4",
-            S5: "movies/s5_동영상.mp4", 
-            S6: "movies/s6_동영상.mp4", 
-            S7: "movies/s7_동영상.mp4", 
-            S8: "movies/s8_동영상.mp4", 
-            END_A: "movies/EndA_동영상.mp4", 
-            END_B: "movies/EndB_동영상.mp4",
-            END_C: "movies/EndC_동영상.mp4",
-            G_OVER: "movies/EndC_동영상.mp4"
+        const sceneMovies = {
+            S1: "movies/s1_동영상.mp4", S2: "movies/s2_동영상.mp4", S3: "movies/s3_동영상.mp4", 
+            S4: "movies/s4_동영상.mp4", S_LOOP: "movies/s4_동영상.mp4", S5: "movies/s5_동영상.mp4", 
+            S6: "movies/s6_동영상.mp4", S7: "movies/s7_동영상.mp4", S8: "movies/s8_동영상.mp4", 
+            END_A: "movies/s8_동영상.mp4", END_B: "movies/s8_동영상.mp4", G_OVER: "movies/s4_동영상.mp4"
         };
 
         const storyData = {
@@ -500,7 +498,7 @@
                 id: "🎬 서막", title: "바벨의 그림자", meta: "바벨 코프 본사 120층",
                 environment: "흑색 대리석 바닥, 창문에 흘러내리는 강렬한 산성비.",
                 script: [
-                    { type: "narration", text: "솔저는 관자놀이에 박힌 단자를 쓸어내린다. 바벨의 홀로그램이 나타난다." },
+                    { type: "narration", text: "솔저는 관자놀이에 박힌 단자가 쓸어내린다. 바벨의 홀로그램이 나타난다." },
                     { type: "dialogue", speaker: "바벨", text: "지시만 따른다면 기억을 돌려주지. 공주들이 사라졌다. 에덴 서버의 마인드 코어를 회수해라." },
                     { type: "dialogue", speaker: "솔저", text: "용건만 말해. 대가만 분명하다면 움직인다." }
                 ],
@@ -511,7 +509,7 @@
             },
             S2: {
                 id: "🎬 챕터 1", title: "하층 지구로의 추락", meta: "구룡 지구 골목",
-                environment: "수직 하강하는 고속 리프트 안. 매연과 네온사인이 가득한 하층 구역.",
+                environment: "수직 하강하는 고속 리프트 안. 매연 및 네온사인이 가득한 하층 구역.",
                 script: [
                     { type: "narration", text: "솔저는 가죽 코트 깃을 올린다. 기압차 때문에 가벼운 현기증이 발생한다." },
                     { type: "dialogue", speaker: "솔저", text: "리프트가 아래로 처박힐 때마다 차가운 매연 냄새가 진동을 하는군." }
@@ -523,7 +521,7 @@
             },
             S3: {
                 id: "🎬 챕터 2", title: "구룡 지구의 조력자", meta: "올드 잭의 정비소",
-                environment: "지하 통로 끝 안가. 해체된 드론และ 기판들이 어지럽게 널려있다.",
+                environment: "지하 통로 끝 안가. 해체된 드론과 기판들이 어지럽게 널려있다.",
                 script: [
                     { type: "narration", text: "올드 잭이 낡은 의자에 기대어 다가오는 솔저를 노려본다." },
                     { type: "dialogue", speaker: "올드 잭", text: "내 장비를 빌려주는 대가로 넌 내게 뭘 줄 건가?" }
@@ -535,7 +533,7 @@
             },
             S4: {
                 id: "🎬 관문", title: "가상 에덴의 장막", meta: "중앙 서버 게이트 앞",
-                environment: "검은 매트릭스 공간 and 시안 블루빛 회로 성벽.",
+                environment: "검은 매트릭스 공간 및 시안 블루빛 회로 성벽.",
                 script: [
                     { type: "narration", text: "회로들이 일제히 선홍색으로 반전되며 시스템 딥 스캔이 시작된다." }
                 ],
@@ -665,7 +663,12 @@
             }, 50);
         }
 
+        /* 🔊 유저 상호작용이 일어나는 순간 비디오의 음소거를 해제하는 로직 추가 */
         function startInvestigation(targetScene = 'S1') {
+            // 표지 영상 오디오 잠금 해제 시도
+            const titleVideo = document.getElementById('titleVideo');
+            if(titleVideo) { titleVideo.muted = false; }
+
             const title = document.getElementById('titleScreen');
             const game = document.getElementById('mainGameWrapper');
             triggerCyberGlitch(600); 
@@ -682,7 +685,6 @@
             }, 600);
         }
 
-        /* ✨ 인게임 제목을 눌렀을 때 표지 화면으로 리셋해 돌아가는 함수 */
         function backToTitle() {
             triggerCyberGlitch(400);
             stopBloodEngine();
@@ -780,7 +782,8 @@
                 video.src = sceneMovies[sceneKey];
                 video.autoplay = true;
                 video.loop = true;
-                video.muted = true;
+                /* 🔊 인게임 비디오가 로드될 때 소리를 켜고 재생합니다 (브라우저 상호작용 락 해제된 시점) */
+                video.muted = false; 
                 video.setAttribute('playsinline', '');
                 
                 video.onerror = () => { 
@@ -823,6 +826,14 @@
             }
             renderScene(choice.next); updateDashboard();
         }
+
+        /* 첫 화면 어디든 클릭하면 오디오 락을 해제하기 위한 전역 리스너 */
+        window.addEventListener('click', () => {
+            const titleVideo = document.getElementById('titleVideo');
+            if(titleVideo && titleVideo.muted) {
+                titleVideo.muted = false;
+            }
+        }, { once: true });
 
         window.onload = () => { runSystemRecoveringSequence(); };
     </script>
