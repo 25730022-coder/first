@@ -69,7 +69,7 @@
         }
 
         /* ==========================================
-           [2단계] 게임 타이틀 표지 (배경 동영상 꽉 차게)
+           [2단계] 게임 타이틀 표지
         ========================================== */
         #titleScreen {
             position: fixed;
@@ -247,19 +247,27 @@
             flex: 8.5; /* 85% 차지 */
             height: 100%;
             position: relative;
-            background-color: #0c0b0a;
+            background-color: #000000; /* 와이드 스크린 여백을 채워줄 딥 블랙 */
             border-right: 2px solid rgba(122, 18, 18, 0.3);
             box-sizing: border-box;
             z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .scene-visual-frame {
             width: 100%;
             height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        
+        /* 💡 16:9 원본 와이드 스케일 강제 유지 설정 */
         .scene-visual-frame video {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* 영상이 찌그러지거나 잘리지 않고 원본 비율을 완벽 유지함 */
             display: block;
         }
 
@@ -273,11 +281,10 @@
             padding: 15px 12px;
             gap: 12px;
             z-index: 2;
-            background-color: #ded3b8; /* 가독성을 위해 배경을 아주 살짝 정돈 */
+            background-color: #ded3b8; 
             overflow: hidden;
         }
 
-        /* 우측 가로폭이 좁아지므로 스탯 레이아웃을 촘촘하게 2열 배치로 최적화 */
         .system-dashboard {
             background: rgba(18, 16, 14, 0.98);
             border: 1px solid #4a3e2e;
@@ -305,19 +312,17 @@
         }
         
         .scene-header { border-bottom: 1px solid var(--stamp-red); padding-bottom: 4px; margin-bottom: 10px; }
-        .scene-title { font-size: 14px; font-weight: 700; color: var(--stamp-red); display: block; }
+        .scene-title { font-size: 13px; font-weight: 700; color: var(--stamp-red); display: block; }
         .scene-meta { font-size: 10px; font-style: italic; color: #554e3f; display: block; margin-top: 2px; }
         
         .environment-box { background: rgba(0, 0, 0, 0.05); border-left: 2px solid #7a6e55; padding: 8px; margin-bottom: 12px; font-size: 11px; line-height: 1.5; color: #4a4235; word-break: keep-all; }
         
-        /* 스크롤 가능한 텍스트 연출 구역 */
-        .script-content { font-size: 12px; line-height: 1.6; color: var(--ink-black); margin-bottom: 15px; flex-grow: 1; overflow-y: auto; padding-right: 2px; }
+        .script-content { font-size: 12px; line-height: 1.6; color: var(--ink-black); margin-bottom: 15px; flex-grow: 1; overflow-y: auto; padding-right: 4px; }
         .narration { font-style: italic; color: #554e3f; margin-bottom: 8px; padding-left: 8px; position: relative; }
         .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 7px; top: 3px; }
         .dialogue-line { margin-bottom: 8px; }
         .speaker { font-weight: 700; color: var(--stamp-red); }
 
-        /* 좁은 폭에 맞춰 꽉 찬 버튼으로 스케일 변경 */
         .choices-box { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid rgba(0,0,0,0.12); padding-top: 10px; margin-top: auto; }
         .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 10px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 11px; color: var(--ink-black); cursor: pointer; transition: all 0.2s ease; background-color: rgba(255,255,255,0.4); word-break: keep-all; }
         .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); }
@@ -404,19 +409,19 @@
     <canvas id="bloodCanvas"></canvas>
     <canvas id="cyberGlitchCanvas"></canvas>
 
-    <!-- [3단계] 인게임 인터페이스 화면 (비율 최적화) -->
+    <!-- [3단계] 인게임 인터페이스 화면 -->
     <div id="mainGameWrapper">
         <div class="game-container">
             
-            <!-- 🎬 [왼쪽 85%] 영화처럼 시원하게 출력되는 대형 동영상 증거 화면 구역 -->
+            <!-- 🎬 [왼쪽 85%] 와이드스크린 비율 완벽 고정 구역 -->
             <div class="left-visual-stage">
                 <div id="sceneVisualFrame" class="scene-visual-frame"></div>
             </div>
 
-            <!-- 💬 [오른쪽 15%] 가로폭 최적화형 대사 및 간결 계기판 대시보드 구역 -->
+            <!-- 💬 [오른쪽 15%] 가로폭 최적화 텍스트 시스템 공간 -->
             <div class="right-interface-stage">
                 
-                <!-- 상단 사이버 계기판 (2열 고밀도 압축 구조) -->
+                <!-- 상단 사이버 계기판 (2열 압축형) -->
                 <div class="system-dashboard">
                     <div class="stat-group">
                         <div class="stat-item"><span class="stat-label">Memory</span><span id="statMemory" class="stat-value">100%</span></div>
@@ -432,7 +437,7 @@
                     </div>
                 </div>
 
-                <!-- 텍스트/선택지 모듈 -->
+                <!-- 텍스트/선택지 통합 연출 스크롤 타워 -->
                 <div class="text-content-wrapper">
                     <div class="scene-header">
                         <span id="sceneId" class="scene-title">로드 중...</span>
@@ -455,14 +460,14 @@
             S1: "movies/s1_동영상.mp4",
             S2: "movies/s2_동영상.mp4",
             S3: "movies/s3_동영상.mp4", 
-            S4: "movies/s4_동영상.mp4",
+            S4: "movies/s4_동영상.mp4", 
             S_LOOP: "movies/s4_동영상.mp4",
             S5: "movies/s5_동영상.mp4", 
-            S6: "movies/s6_동영상.mp4",
-            S7: "movies/s7_동영상.mp4",
+            S6: "movies/s6_동영상.mp4", 
+            S7: "movies/s7_동영상.mp4", 
             S8: "movies/s8_동영상.mp4", 
-            END_A: "movies/s8_동영상.mp4",
-            END_B: "movies/s8_동영상.mp4",
+            END_A: "movies/s8_동영상.mp4", 
+            END_B: "movies/s8_동영상.mp4", 
             G_OVER: "movies/s4_동영상.mp4"
         };
 
@@ -572,7 +577,7 @@
                 id: "🏆 TRUE", title: "도시의 해방", meta: "네오 코리아 전역",
                 environment: "도시 전체를 뒤덮은 황금빛 데이터 해방 전류.",
                 script: [
-                    { type: "dialogue", speaker: "올드 잭", text: "봐라, 모든 전광판이 저들의 추악한 로그로 뒤덮이고 있어! 진실은 증명됐다!" }
+                    { type: "dialogue", speaker: "올드 잭", text: "봐라, 모든 전광판이 저들의 추악한 로그로 뒤덮지고 있어! 진실은 증명됐다!" }
                 ],
                 choices: [{ text: "처음으로 돌아가기", next: "RESET" }]
             },
