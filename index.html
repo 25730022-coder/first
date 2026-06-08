@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>UNLOGGED: 사라진 밤의 증명</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght=400;700&display=swap');
 
         :root {
             --paper-bg: #d4c7a9;
@@ -31,7 +31,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden; /* 인게임 전체화면 고정을 위해 hidden 처리 */
         }
 
         /* ==========================================
@@ -195,94 +195,120 @@
         .timeline-node:hover .node-circle { transform: scale(1.1); border-color: #000; }
 
         /* ==========================================
-           [3단계] 인게임 인터페이스 구조
+           [3단계] 인게임 인터페이스 구조 개편 (전체 화면 분할)
         ========================================== */
         #mainGameWrapper {
             display: none;
             opacity: 0;
             transition: opacity 0.6s ease;
-            width: 900px;
-            max-width: 95%;
-            margin: 40px auto;
-            position: relative;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
             z-index: 10;
+            display: flex;
+            flex-direction: row; /* 가로 배열 구조화 */
         }
 
         #bloodCanvas, #cyberGlitchCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; }
         #bloodCanvas { z-index: 1; }
         #cyberGlitchCanvas { z-index: 2; display: none; }
 
-        .system-dashboard {
-            background: rgba(10, 10, 12, 0.85);
-            border: 1px solid #222;
-            padding: 15px 25px;
-            border-radius: 4px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.7);
-        }
-        .stat-group { display: flex; gap: 25px; }
-        .stat-item { display: flex; flex-direction: column; }
-        .stat-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .stat-value { font-family: monospace; font-size: 18px; font-weight: bold; color: #eee; }
-        .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
-
-        .game-container {
-            background-color: var(--paper-bg);
-            border-radius: 2px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8), inset 0 0 60px rgba(0,0,0,0.15);
-            padding: 50px 60px;
-            box-sizing: border-box;
-            position: relative;
-            border: 1px solid #bdae8a;
-        }
-        .game-container::before {
-            content: '';
-            position: absolute;
-            top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border: 1px solid rgba(122, 18, 18, 0.15);
-            pointer-events: none;
-        }
-        .scene-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--stamp-red); padding-bottom: 10px; margin-bottom: 30px; }
-        .scene-title { font-size: 24px; font-weight: 700; color: var(--stamp-red); letter-spacing: -0.5px; }
-        .scene-meta { font-size: 13px; font-style: italic; color: #554e3f; }
-        
-        .environment-box { background: rgba(0, 0, 0, 0.04); border-left: 3px solid #7a6e55; padding: 12px 18px; margin-bottom: 25px; font-size: 14px; line-height: 1.6; color: #4a4235; }
-        
-        /* 장면별 이미지가 크게 들어갈 영역 */
-        .scene-visual-frame {
-            width: 100%;
-            height: 380px;
-            border: 1px solid #7a6e55;
+        /* 🖼️ [좌측 75%] 풀스크린 일러스트 공간 */
+        .left-visual-stage {
+            flex: 7.5;
+            height: 100%;
             background-color: #111;
-            margin: 25px 0;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        }
+        /* 기존 scene-visual-frame을 좌측 75%를 꽉 채우도록 재배치 */
+        .scene-visual-frame {
+            width: 100%;
+            height: 100%;
+            position: relative;
             animation: fadeIn 0.8s ease forwards;
         }
         .scene-visual-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
         }
 
-        .script-content { font-size: 16px; line-height: 1.8; color: var(--ink-black); margin-bottom: 35px; min-height: 120px; }
-        .narration { font-style: italic; color: #4a4235; margin-bottom: 20px; position: relative; padding-left: 15px; }
-        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 10px; top: 2px; }
-        .dialogue-line { margin-bottom: 14px; }
-        .speaker { font-weight: 700; color: var(--stamp-red); margin-right: 8px; }
+        /* 💬 [우측 25%] 텍스트 상자 및 대시보드 공간 */
+        .right-interface-stage {
+            flex: 2.5;
+            min-width: 340px; /* UI 뭉개짐 방지 최소 마진값 */
+            height: 100%;
+            background-color: #0d0c0a; /* 사이버 앤틱 배경 조색 */
+            border-left: 2px solid #7a6e55;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto; /* 내용이 많아질 때 개별 스크롤 제공 */
+            gap: 15px;
+        }
 
-        .choices-box { display: flex; flex-direction: column; gap: 12px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 25px; }
-        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 14px 20px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 15px; color: var(--ink-black); cursor: pointer; transition: all 0.3s ease; position: relative; background-color: rgba(255,255,255,0.2); }
-        .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); padding-left: 28px; }
+        /* 상단 시스템 대시보드 커스텀 축소 정렬 */
+        .system-dashboard {
+            background: rgba(10, 10, 12, 0.95);
+            border: 1px solid #2d2922;
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .stat-group { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* 3열 배열로 직관적 축소 */
+            gap: 10px; 
+        }
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .stat-value { font-family: monospace; font-size: 15px; font-weight: bold; color: #eee; }
+        .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
+
+        /* 인게임 메인 컨테이너 컴팩트화 */
+        .game-container {
+            background-color: var(--paper-bg);
+            border-radius: 2px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.15);
+            padding: 25px 20px;
+            box-sizing: border-box;
+            position: relative;
+            border: 1px solid #bdae8a;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* 가용 남은 공간을 꽉 채우도록 설정 */
+        }
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px solid rgba(122, 18, 18, 0.15);
+            pointer-events: none;
+        }
+        .scene-header { border-bottom: 2px solid var(--stamp-red); padding-bottom: 8px; margin-bottom: 15px; }
+        .scene-title { font-size: 18px; font-weight: 700; color: var(--stamp-red); letter-spacing: -0.5px; display: block; margin-bottom: 3px; }
+        .scene-meta { font-size: 11px; font-style: italic; color: #554e3f; display: block; }
+        
+        .environment-box { background: rgba(0, 0, 0, 0.05); border-left: 3px solid #7a6e55; padding: 10px 12px; margin-bottom: 15px; font-size: 12px; line-height: 1.5; color: #4a4235; word-break: keep-all; }
+        
+        .script-content { font-size: 14px; line-height: 1.7; color: var(--ink-black); margin-bottom: 20px; flex-grow: 1; min-height: 100px; overflow-y: auto; }
+        .narration { font-style: italic; color: #4a4235; margin-bottom: 12px; position: relative; padding-left: 12px; }
+        .narration::before { content: '■'; position: absolute; left: 0; color: var(--stamp-red); font-size: 8px; top: 3px; }
+        .dialogue-line { margin-bottom: 10px; }
+        .speaker { font-weight: 700; color: var(--stamp-red); margin-right: 6px; }
+
+        .choices-box { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; margin-top: auto; }
+        .choice-btn { background: none; border: 1px solid #9c8e6f; padding: 10px 15px; text-align: left; font-family: 'Nanum Myeongjo', serif; font-size: 13px; color: var(--ink-black); cursor: pointer; transition: all 0.3s ease; position: relative; background-color: rgba(255,255,255,0.2); word-break: keep-all; }
+        .choice-btn:hover { background-color: var(--ink-black); color: var(--paper-bg); border-color: var(--ink-black); padding-left: 24px; }
         .choice-btn::before { content: '☞'; position: absolute; left: -10px; opacity: 0; transition: all 0.3s ease; }
-        .choice-btn:hover::before { left: 12px; opacity: 1; }
+        .choice-btn:hover::before { left: 8px; opacity: 1; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
@@ -362,38 +388,49 @@
     <canvas id="bloodCanvas"></canvas>
     <canvas id="cyberGlitchCanvas"></canvas>
 
+    <!-- 7.5 : 2.5 비율 가로 레이아웃 적용 완료 마스터 Wrapper -->
     <div id="mainGameWrapper">
-        <div class="system-dashboard">
-            <div class="stat-group">
-                <div class="stat-item"><span class="stat-label">Memory</span><span id="statMemory" class="stat-value">100%</span></div>
-                <div class="stat-item"><span class="stat-label">Sync</span><span id="statSync" class="stat-value">0%</span></div>
-                <div class="stat-item"><span class="stat-label">Corruption</span><span id="statCorruption" class="stat-value">0%</span></div>
-                <div class="stat-item"><span class="stat-label">Credit</span><span id="statCredit" class="stat-value">0%</span></div>
-                <div class="stat-item"><span class="stat-label">Integrity</span><span id="statIntegrity" class="stat-value">0%</span></div>
-                <div class="stat-item"><span class="stat-label">Noise</span><span id="statNoise" class="stat-value">0%</span></div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label" style="text-align:right;">Node System</span>
-                <span id="nodeStatus" class="stat-value neon-glow">STANDBY</span>
-            </div>
+        
+        <!-- 🖼️ [좌측 75%] 이미지 연출 가로 공간 분할 -->
+        <div class="left-visual-stage">
+            <div id="sceneVisualFrame" class="scene-visual-frame"></div>
         </div>
 
-        <div class="game-container">
-            <div class="scene-header">
-                <span id="sceneId" class="scene-title">로드 중...</span>
-                <span id="sceneMeta" class="scene-meta">로드 중...</span>
+        <!-- 💬 [우측 25%] 대시보드 스탯 모듈 + 대사창 스크립트 서류 결합 공간 -->
+        <div class="right-interface-stage">
+            
+            <!-- 시스템 대시보드 스탯 인터페이스 -->
+            <div class="system-dashboard">
+                <div class="stat-group">
+                    <div class="stat-item"><span class="stat-label">Memory</span><span id="statMemory" class="stat-value">100%</span></div>
+                    <div class="stat-item"><span class="stat-label">Sync</span><span id="statSync" class="stat-value">0%</span></div>
+                    <div class="stat-item"><span class="stat-label">Corruption</span><span id="statCorruption" class="stat-value">0%</span></div>
+                    <div class="stat-item"><span class="stat-label">Credit</span><span id="statCredit" class="stat-value">0%</span></div>
+                    <div class="stat-item"><span class="stat-label">Integrity</span><span id="statIntegrity" class="stat-value">0%</span></div>
+                    <div class="stat-item"><span class="stat-label">Noise</span><span id="statNoise" class="stat-value">0%</span></div>
+                </div>
+                <div class="stat-item" style="border-top: 1px solid #2d2922; padding-top: 8px;">
+                    <span class="stat-label">Node System</span>
+                    <span id="nodeStatus" class="stat-value neon-glow">STANDBY</span>
+                </div>
             </div>
-            <div id="environmentBox" class="environment-box">환경 로드 중...</div>
-            
-            <div id="sceneVisualFrame" class="scene-visual-frame"></div>
-            
-            <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
-            <div id="choicesBox" class="choices-box"></div>
+
+            <!-- 시나리오 텍스트 용지 및 분기 선택지 결합 박스 -->
+            <div class="game-container">
+                <div class="scene-header">
+                    <span id="sceneId" class="scene-title">로드 중...</span>
+                    <span id="sceneMeta" class="scene-meta">로드 중...</span>
+                </div>
+                <div id="environmentBox" class="environment-box">환경 로드 중...</div>
+                
+                <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
+                <div id="choicesBox" class="choices-box"></div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // 📣 상위 폴더 first 안의 images 폴더 경로 가이드 적용 및 수정한 데이터 맵 객체
         const sceneImages = {
             S1: "images/s1.png",
             S2: "images/s2.png",
@@ -441,7 +478,7 @@
                 environment: "구룡 지구 최하층 구역, 지하 통로 끝에 숨겨진 올드 잭의 지하 정비소. 깜빡이는 구형 형광등, 해체된 드론 잔해와 녹슨 기판들이 가득하다.",
                 script: [
                     { type: "narration", text: "철문을 밀고 들어선다. 기름때 절은 캔버스 앞치마를 두른 올드 잭이 철제 의자에 깊숙이 앉아 다가오는 솔저를 노려본다." },
-                    { type: "dialogue", speaker: "올드 잭", text: "바벨의 사냥개 세션인가, 솔저? 아니면 기억을 잃더니 드디어 완전히 미쳐버린 건가? 내 다이브 장비와 리스크를 빌려주는 대가로 넌 내게 뭘 줄 건가?" }
+                    { type: "dialogue", speaker: "올드 잭", text: "바벨의 사냥개 세션인가, 솔저? 아니면 기억을 잃더니 드디어 완전히 미쳐버린 건가? 내 다이브 장비 and 리스크를 빌려주는 대가로 넌 내게 뭘 줄 건가?" }
                 ],
                 choices: [
                     { text: "올드 잭과의 계약을 정직하게 수락하고, 소스코드 원본 무결성을 보장한다.", next: "S4", modifiers: { integrity: 20, corruption: -15 } },
@@ -506,7 +543,7 @@
                 id: "🎬 에필로그", title: "데이터 코어의 진실 및 결산", meta: "에덴의 절대 성역 'Deep_Core' 터미널 앞 거대한 투명 유리 방",
                 environment: "에덴의 절대 성역, 'Deep_Core' 터미널 앞 거대한 투명 유리 방. 발밑으로 네오-코리아의 밤 야경이 미니어처처럼 보인다.",
                 script: [
-                    { type: "narration", text: "마침내 최종 컴파일러 엔진 앞에 도달한 솔저는 노이즈 잔상และ 상처로 가득 찬 손으로 수사 아카이브와 공주들의 데이터 도킹을 실행한다." }
+                    { type: "narration", text: "마침내 최종 컴파일러 엔진 앞에 도달한 솔저는 노이즈 잔상과 상처로 가득 찬 손으로 수사 아카이브와 공주들의 데이터 도킹을 실행한다." }
                 ],
                 choices: [
                     { text: "최종 연산 값을 컴파일하여 내 운명의 결말을 받아들인다.", next: "CALCULATE_ENDING" }
@@ -592,8 +629,7 @@
             
             setTimeout(() => {
                 title.style.display = 'none'; 
-                game.style.display = 'block';
-                // 상태 초기화
+                game.style.display = 'flex'; /* 블록 레이아웃에서 flex 레이아웃으로 동적 바인딩 복원 */
                 gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0, currentScene: targetScene };
                 stopBloodEngine();
                 updateDashboard(); 
@@ -634,7 +670,6 @@
         
         function stopBloodEngine() { isBloodActive = false; if (bloodInterval) { clearInterval(bloodInterval); bloodInterval = null; } bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height); }
 
-        // 수사관님이 주신 코드 맨 아랫줄의 Math.random() 끊김 현상을 수정/보완한 완전한 글리치 함수
         function triggerCyberGlitch(duration = 600) {
             glitchCanvas.style.display = 'block'; 
             let glitchTime = 0;
@@ -688,7 +723,6 @@
             const scene = storyData[sceneKey];
             if (!scene) return;
 
-            // 상단 구상도 노드 활성화 디자인 실시간 동기화 업데이트
             document.querySelectorAll('.timeline-node').forEach(node => node.classList.remove('active'));
             if(sceneKey === 'S1') document.getElementById('node-S1')?.classList.add('active');
             else if(sceneKey === 'S2') document.getElementById('node-S2')?.classList.add('active');
@@ -699,7 +733,6 @@
             document.getElementById('sceneMeta').innerText = scene.meta;
             document.getElementById('environmentBox').innerText = scene.environment;
 
-            // 이미지 프레임 영역 바인딩
             const visualFrame = document.getElementById('sceneVisualFrame');
             visualFrame.innerHTML = '';
             if (sceneImages[sceneKey]) {
@@ -707,14 +740,13 @@
                 img.src = sceneImages[sceneKey];
                 img.alt = scene.title;
                 img.onerror = () => {
-                    visualFrame.innerHTML = `<span class="err-msg">[⚠️ 잃어버린 기억 데이터 아카이브: ${sceneImages[sceneKey]} 불러오기 실패]</span>`;
+                    visualFrame.innerHTML = `<span style="color:#7a1212; display:block; padding:20px; font-size:12px;">[⚠️ 기억 데이터 로드 실패: ${sceneImages[sceneKey]}]</span>`;
                 };
                 visualFrame.appendChild(img);
             } else {
-                visualFrame.innerHTML = `<span class="err-msg">[데이터 미디어 소스 없음]</span>`;
+                visualFrame.innerHTML = `<span style="color:#7a1212; display:block; padding:20px; font-size:12px;">[데이터 소스 없음]</span>`;
             }
 
-            // 스크립트 대화 및 지문 렌더링
             const scriptBox = document.getElementById('scriptContent');
             scriptBox.innerHTML = '';
             scene.script.forEach(line => {
@@ -728,12 +760,11 @@
                 } else {
                     p.className = 'dialogue-line';
                     p.style.color = '#c93b3b';
-                    p.innerText = line.text || line.text;
+                    p.innerText = line.text;
                 }
                 scriptBox.appendChild(p);
             });
 
-            // 선택지 구성
             const choicesBox = document.getElementById('choicesBox');
             choicesBox.innerHTML = '';
             scene.choices.forEach(choice => {
@@ -748,7 +779,6 @@
         function selectChoice(choice) {
             triggerCyberGlitch(400);
 
-            // 스탯 증감치 반영 계산기
             if (choice.modifiers) {
                 for (let key in choice.modifiers) {
                     if (gameState.hasOwnProperty(key)) {
@@ -757,9 +787,7 @@
                 }
             }
 
-            // 관문 검증 분기점 체크 조건문
             if (choice.next === "CHECK_S4") {
-                // 특정 프로토콜 가치 판단
                 if (gameState.corruption >= 10 || gameState.sync >= 20) {
                     renderScene("S5");
                 } else {
@@ -770,7 +798,6 @@
             }
 
             if (choice.next === "CALCULATE_ENDING") {
-                // 최종 엔딩 계산 엔진
                 if (gameState.memory <= 40) {
                     renderScene("G_OVER");
                 } else if (gameState.integrity >= 30 || gameState.sync >= 30) {
@@ -791,12 +818,10 @@
                 return;
             }
 
-            // 일반적인 다음 장면 이동
             renderScene(choice.next);
             updateDashboard();
         }
 
-        // 초기 시작 시퀀스 구동
         window.onload = () => {
             runSystemRecoveringSequence();
         };
