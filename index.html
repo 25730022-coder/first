@@ -83,17 +83,18 @@
             opacity: 0;
             transition: opacity 0.6s ease;
             background-color: #000;
+            overflow: hidden;
         }
         
-    .title-video-bg {
-          position: absolute;
-          top: 50%; left: 50%;
-          min-width: 100%; min-height: 100%;
-          width: auto; height: auto;
-          transform: translate(-50%, -50%);
-          object-fit: cover;
-          z-index: 1;
-          opacity: 1; 
+        .title-video-bg {
+            position: absolute;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: 1;
+            opacity: 1; /* ✨ 원본 밝기 유지 */
         }
         
         .title-content-box {
@@ -104,6 +105,10 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 40px 60px;
+            border-radius: 8px;
+            backdrop-filter: blur(2px);
         }
         .title-main {
             font-size: 64px;
@@ -122,11 +127,12 @@
             margin-bottom: 30px;
         }
         .title-author {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 16px; /* ✨ 요청하신 대로 학번/이름 크기 확대 */
+            font-weight: 700;
             color: #ffffff;
             letter-spacing: 3px;
             margin-bottom: 45px;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
         }
         .title-menu {
             display: flex;
@@ -134,7 +140,7 @@
             gap: 20px;
         }
         .start-btn {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             border: 1px solid #ffffff;
             color: #ffffff;
             padding: 12px 35px;
@@ -246,16 +252,17 @@
 
         /* 🎬 [왼쪽] 대형 동영상 수사 구역 (85%) */
         .left-visual-stage {
-            flex: 8.5; /* 85% 차지 */
+            flex: 8.5; 
             height: 100%;
             position: relative;
-            background-color: #000000; /* 와이드 스크린 여백을 채워줄 딥 블랙 */
+            background-color: #000000; 
             border-right: 2px solid rgba(122, 18, 18, 0.3);
             box-sizing: border-box;
             z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
         .scene-visual-frame {
             width: 100%;
@@ -265,17 +272,18 @@
             justify-content: center;
         }
         
-        /* 💡 16:9 원본 와이드 스케일 강제 유지 설정 */
         .scene-visual-frame video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* 영상이 찌그러지거나 잘리지 않고 원본 비율을 완벽 유지함 */
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain; 
             display: block;
         }
 
         /* 💬 [오른쪽] 컴팩트 대사 및 스탯 정보창 구역 (15%) */
         .right-interface-stage {
-            flex: 1.5; /* 15% 차지 */
+            flex: 1.5; 
             height: 100%;
             box-sizing: border-box;
             display: flex;
@@ -285,6 +293,23 @@
             z-index: 2;
             background-color: #ded3b8; 
             overflow: hidden;
+        }
+
+        /* ✨ 인게임 상시 노출 게임 제목 스타일 */
+        .ingame-game-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #3a332a;
+            text-align: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+            letter-spacing: 1px;
+        }
+        .ingame-game-title:hover {
+            color: var(--stamp-red);
+            text-shadow: 0 0 8px rgba(122, 18, 18, 0.2);
         }
 
         .system-dashboard {
@@ -415,15 +440,16 @@
     <div id="mainGameWrapper">
         <div class="game-container">
             
-            <!-- 🎬 [왼쪽 85%] 와이드스크린 비율 완벽 고정 구역 -->
             <div class="left-visual-stage">
                 <div id="sceneVisualFrame" class="scene-visual-frame"></div>
             </div>
 
-            <!-- 💬 [오른쪽 15%] 가로폭 최적화 텍스트 시스템 공간 -->
             <div class="right-interface-stage">
-                
-                <!-- 상단 사이버 계기판 (2열 압축형) -->
+                <!-- ✨ 인게임 우측 최상단에 상시 노출되는 동화 제목 (클릭 시 표지로 복귀) -->
+                <div class="ingame-game-title" onclick="backToTitle()" title="클릭하면 표지 화면으로 돌아갑니다">
+                    UNLOGGED: 사라진 밤의 증명
+                </div>
+
                 <div class="system-dashboard">
                     <div class="stat-group">
                         <div class="stat-item"><span class="stat-label">Memory</span><span id="statMemory" class="stat-value">100%</span></div>
@@ -439,7 +465,6 @@
                     </div>
                 </div>
 
-                <!-- 텍스트/선택지 통합 연출 스크롤 타워 -->
                 <div class="text-content-wrapper">
                     <div class="scene-header">
                         <span id="sceneId" class="scene-title">로드 중...</span>
@@ -450,14 +475,13 @@
                     <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
                     <div id="choicesBox" class="choices-box"></div>
                 </div>
-
             </div>
 
         </div>
     </div>
 
     <script>
-        const sceneMovies = {
+       const sceneMovies = {
             cover: "movies/cover_동영상.mp4",
             S1: "movies/s1_동영상.mp4",
             S2: "movies/s2_동영상.mp4",
@@ -502,7 +526,7 @@
             },
             S3: {
                 id: "🎬 챕터 2", title: "구룡 지구의 조력자", meta: "올드 잭의 정비소",
-                environment: "지하 통로 끝 안가. 해체된 드론과 기판들이 어지럽게 널려있다.",
+                environment: "지하 통로 끝 안가. 해체된 드론และ 기판들이 어지럽게 널려있다.",
                 script: [
                     { type: "narration", text: "올드 잭이 낡은 의자에 기대어 다가오는 솔저를 노려본다." },
                     { type: "dialogue", speaker: "올드 잭", text: "내 장비를 빌려주는 대가로 넌 내게 뭘 줄 건가?" }
@@ -514,7 +538,7 @@
             },
             S4: {
                 id: "🎬 관문", title: "가상 에덴의 장막", meta: "중앙 서버 게이트 앞",
-                environment: "검은 매트릭스 공간과 시안 블루빛 회로 성벽.",
+                environment: "검은 매트릭스 공간 and 시안 블루빛 회로 성벽.",
                 script: [
                     { type: "narration", text: "회로들이 일제히 선홍색으로 반전되며 시스템 딥 스캔이 시작된다." }
                 ],
@@ -661,6 +685,22 @@
             }, 600);
         }
 
+        /* ✨ 인게임 제목을 눌렀을 때 표지 화면으로 리셋해 돌아가는 함수 */
+        function backToTitle() {
+            triggerCyberGlitch(400);
+            stopBloodEngine();
+            
+            const game = document.getElementById('mainGameWrapper');
+            const title = document.getElementById('titleScreen');
+            
+            game.style.opacity = '0';
+            setTimeout(() => {
+                game.style.display = 'none';
+                title.style.display = 'flex';
+                setTimeout(() => title.style.opacity = '1', 50);
+            }, 400);
+        }
+
         function startBloodEngine() { if (isBloodActive) return; isBloodActive = true; bloodInterval = setInterval(() => drawBloodSplatter(), 180); }
         function stopBloodEngine() { isBloodActive = false; if (bloodInterval) { clearInterval(bloodInterval); bloodInterval = null; } bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height); }
         
@@ -782,8 +822,7 @@
                 updateDashboard(); return;
             }
             if (choice.next === "RESET") {
-                stopBloodEngine(); document.getElementById('mainGameWrapper').style.display = 'none';
-                const ts = document.getElementById('titleScreen'); ts.style.display = 'flex'; setTimeout(() => ts.style.opacity = '1', 50); return;
+                backToTitle(); return;
             }
             renderScene(choice.next); updateDashboard();
         }
