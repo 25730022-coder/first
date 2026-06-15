@@ -69,7 +69,7 @@
         }
 
         /* ==========================================
-           [2단계] 게임 타이틀 표지 (네모 박스 완전 제거 상태)
+           [2단계] 게임 타이틀 표지
         ========================================== */
         #titleScreen {
             position: fixed;
@@ -223,7 +223,7 @@
         .node-subtitle { font-size: 10px; color: #777267; }
 
         /* ==========================================
-           [3단계] 인게임 인터페이스 화면 (★65% : 35% 검증완료)
+           [3단계] 인게임 인터페이스 화면
         ========================================== */
         #mainGameWrapper {
             display: none;
@@ -258,7 +258,7 @@
 
         /* 비주얼 가로 65% */
         .left-visual-stage {
-            flex: 6.5;
+            flex: 6.5; 
             height: 100%;
             position: relative;
             background-color: #000000; 
@@ -289,7 +289,7 @@
 
         /* 텍스트창 가로 35% */
         .right-interface-stage {
-            flex: 3.5;
+            flex: 3.5; 
             height: 100%;
             box-sizing: border-box;
             display: flex;
@@ -327,7 +327,7 @@
             gap: 8px;
         }
         .stat-group { 
-            display: grid;
+            display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             gap: 10px; 
         }
@@ -401,10 +401,8 @@
             <hr class="modal-divider">
             <div class="prologue-desc">
                 2088년 서울, 마천루 사이로 산성비가 쏟아지는 구룡 지구의 밤은 깊어만 갑니다.<br><br>
-                당신은 한때 촉망받던 수사관이었으나, 현재는 기억의 일부를 상실한 채 부유하고 있습니다.<br>
-                바벨 코프의 호출은 당신에게 있어 단순한 의뢰 그 이상, 잃어버린 자신을 찾을 수 있는 유일한 열쇠입니다.<br><br>
-                에덴 서버의 심연에는 무엇이 잠들어 있을까요?<br>
-                이제 진실을 증명할 시간입니다.
+                당신은 한때 촉망받던 수사관이었으나, 현재는 기억의 일부를 상실한 채 부유하고 있습니다. 바벨 코프의 호출은 당신에게 있어 단순한 의뢰 그 이상, 잃어버린 자신을 찾을 수 있는 유일한 열쇠입니다.<br><br>
+                에덴 서버의 심연에는 무엇이 잠들어 있을까요? 이제 진실을 증명할 시간입니다.
             </div>
             <button class="modal-close-btn" onclick="closeModal('prologueOverlay')">기록 확인 완료</button>
         </div>
@@ -442,13 +440,16 @@
 
     <div id="mainGameWrapper">
         <div class="game-container">
+            
             <div class="left-visual-stage">
                 <div id="sceneVisualFrame" class="scene-visual-frame"></div>
             </div>
+
             <div class="right-interface-stage">
                 <div class="ingame-game-title" onclick="backToTitle()" title="클릭하면 표지 화면으로 돌아갑니다">
                     UNLOGGED: 사라진 밤의 증명
                 </div>
+
                 <div class="system-dashboard">
                     <div class="stat-group">
                         <div class="stat-item"><span class="stat-label">Memory</span><span id="statMemory" class="stat-value">100%</span></div>
@@ -463,75 +464,68 @@
                         <span id="nodeStatus" class="stat-value neon-glow">STANDBY</span>
                     </div>
                 </div>
+
                 <div class="text-content-wrapper">
                     <div class="scene-header">
                         <span id="sceneId" class="scene-title">로드 중...</span>
                         <span id="sceneMeta" class="scene-meta">로드 중...</span>
                     </div>
                     <div id="environmentBox" class="environment-box">환경 로드 중...</div>
+                    
                     <div id="scriptContent" class="script-content">시나리오 로드 중...</div>
                     <div id="choicesBox" class="choices-box"></div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
-        // 비디오 경로 바인딩 매핑
+        /* 대소문자 호환 확장성 처리 완료 */
         const sceneMovies = {
-            cover: "movies/cover_동영상.mp4"
-            S1: "movies/s1_동영상.mp4", 
-            S2: "movies/s2_동영상.mp4", 
-            S3: "movies/s3_동영상.mp4", 
-            S4: "movies/s4_동영상.mp4", 
-            S_LOOP: "movies/s4_동영상.mp4", 
-            S5: "movies/s5_동영상.mp4", 
-            S6: "movies/s6_동영상.mp4", 
-            S7: "movies/s7_동영상.mp4", 
-            S8: "movies/s8_동영상.mp4", 
-            END_A: "movies/End_A_동영상.mp4", 
-            END_B: "movies/End_B_동영상.mp4", 
-            G_OVER: "movies/End_C_동영상.mp4" 
+            S1: "movies/s1_동영상.mp4", S2: "movies/s2_동영상.mp4", S3: "movies/s3_동영상.mp4", 
+            S4: "movies/s4_동영상.mp4", S_LOOP: "movies/s4_동영상.mp4", S5: "movies/s5_동영상.mp4", 
+            S6: "movies/s6_동영상.mp4", S7: "movies/s7_동영상.mp4", S8: "movies/s8_동영상.mp4", 
+            END_A: "movies/end_a_동영상.mp4", END_B: "movies/end_b_동영상.mp4", G_OVER: "movies/end_c_동영상.mp4"
         };
 
-        // 시나리오 원본 통전 데이터
         const storyData = {
             S1: {
-                id: "🎬 서막", title: "바벨의 그림자", meta: "바벨 코프 본사 120층", 
-                environment: "흑색 대리석 바닥, 창문에 흘러내리는 강렬한 산성비.", 
-                script: [ 
-                    { type: "narration", text: "솔저는 관자놀이에 박힌 단자가 쓸어내린다. 바벨의 홀로그램이 나타난다." }, 
-                    { type: "dialogue", speaker: "솔저", text: "용건만 말해. 대가만 분명하다면 움직인다." }, 
-                    { type: "dialogue", speaker: "바벨", text: "지시만 따른다면 기억을 돌려주지. 에덴 서버의 마인드 코어인 공주들을 회수해라." } 
-                ], 
-                choices: [ 
-                    { text: "공식 수사 플러그인 가동", next: "S2", modifiers: { credit: 15 } }, 
-                    { text: "역추적 코드 심어 해킹 접근", next: "S2", modifiers: { corruption: 10 } } 
-                ] 
-            }, 
-            S2: { 
-                id: "🎬 챕터 1", title: "하층 지구로의 추락", meta: "구룡 지구 골목", 
-                environment: "수직 하강하는 고속 리프트 안. 매연 및 네온사인이 가득한 하층 구역.", 
-                script: [ 
-                    { type: "narration", text: "솔저는 가죽 코트 깃을 올린다. 기압차 때문에 가벼운 현기증이 발생한다." }, 
-                    { type: "dialogue", speaker: "솔저", text: "리프트가 아래로 처박힐 때마다 차가운 매연 냄새가 진동을 하는군." } 
-                ], 
-                choices: [ 
-                    { text: "은밀한 고스트 모드 침투", next: "S3", modifiers: { sync: 20, noise: 10 } }, 
-                    { text: "경비 노드를 파괴하며 물리 돌파", next: "S3", modifiers: { noise: 35, memory: -10 } } 
-                ] 
-            }, 
-            S3: { 
-                id: "🎬 챕터 2", title: "구룡 지구의 조력자", meta: "올드 잭의 정비소", 
-                environment: "지하 통로 끝 안가. 해체된 드론과 기판들이 어지럽게 널려있다.", 
-                script: [ 
-                    { type: "narration", text: "올드 잭이 낡은 의자에 기대어 다가오는 솔저를 노려본다." }, 
-                    { type: "dialogue", speaker: "올드 잭", text: "내 장비를 빌려주는 대가로 넌 내게 뭘 줄 건가?" } 
-                ], 
-                choices: [ 
-                    { text: "계약을 수락하고 무결성 보장", next: "S4", modifiers: { integrity: 20, corruption: -15 } }, 
-                    { text: "보안 변조 후 사기 거래 시도", next: "S4", modifiers: { corruption: 25, integrity: -20 } } 
-                ] 
+                id: "🎬 서막", title: "바벨의 그림자", meta: "바벨 코프 본사 120층",
+                environment: "흑색 대리석 바닥, 창문에 흘러내리는 강렬한 산성비.",
+                script: [
+                    { type: "narration", text: "솔저는 관자놀이에 박힌 단자가 쓸어내린다. 바벨의 홀로그램이 나타난다." },
+                    { type: "dialogue", speaker: "바벨", text: "지시만 따른다면 기억을 돌려주지. 공주들이 사라졌다. 에덴 서버의 마인드 코어를 회수해라." },
+                    { type: "dialogue", speaker: "솔저", text: "용건만 말해. 대가만 분명하다면 움직인다." }
+                ],
+                choices: [
+                    { text: "공식 수사 플러그인 가동", next: "S2", modifiers: { credit: 15 } },
+                    { text: "역추적 코드 심어 해킹 접근", next: "S2", modifiers: { corruption: 10 } }
+                ]
+            },
+            S2: {
+                id: "🎬 챕터 1", title: "하층 지구로의 추락", meta: "구룡 지구 골목",
+                environment: "수직 하강하는 고속 리프트 안. 매연 및 네온사인이 가득한 하층 구역.",
+                script: [
+                    { type: "narration", text: "솔저는 가죽 코트 깃을 올린다. 기압차 때문에 가벼운 현기증이 발생한다." },
+                    { type: "dialogue", speaker: "솔저", text: "리프트가 아래로 처박힐 때마다 차가운 매연 냄새가 진동을 하는군." }
+                ],
+                choices: [
+                    { text: "은밀한 고스트 모드 침투", next: "S3", modifiers: { sync: 20, noise: 10 } },
+                    { text: "경비 노드를 파괴하며 물리 돌파", next: "S3", modifiers: { noise: 35, memory: -10 } }
+                ]
+            },
+            S3: {
+                id: "🎬 챕터 2", title: "구룡 지구의 조력자", meta: "올드 잭의 정비소",
+                environment: "지하 통로 끝 안가. 해체된 드론과 기판들이 어지럽게 널려있다.",
+                script: [
+                    { type: "narration", text: "올드 잭이 낡은 의자에 기대어 다가오는 솔저를 노려본다." },
+                    { type: "dialogue", speaker: "올드 잭", text: "내 장비를 빌려주는 대가로 넌 내게 뭘 줄 건가?" }
+                ],
+                choices: [
+                    { text: "계약을 수락하고 무결성 보장", next: "S4", modifiers: { integrity: 20, corruption: -15 } },
+                    { text: "보안 변조 후 사기 거래 시도", next: "S4", modifiers: { corruption: 25, integrity: -20 } }
+                ]
             },
             S4: {
                 id: "🎬 관문", title: "가상 에덴의 장막", meta: "중앙 서버 게이트 앞",
@@ -548,7 +542,7 @@
                 id: "🔄 LOOP", title: "시스템 데드락", meta: "서버 역전류 오작동 구역",
                 environment: "보안 프로토콜 오작동으로 관자놀이가 타오르며 의식이 튕겨 나간다.",
                 script: [
-                    { type: "dialogue", speaker: "SYSTEM", text: "경고: 비인가 세션 감지. 자아 시퀀스 포맷 시작." },
+                    { type: "SYSTEM", text: "경고: 비인가 세션 감지. 자아 시퀀스 포맷 시작." },
                     { type: "dialogue", speaker: "올드 잭", text: "하마터면 전두엽이 다 구워질 뻔했다고! 프로토콜 다시 세팅해!" }
                 ],
                 choices: [
@@ -581,7 +575,9 @@
                 id: "🎬 종막 직전", title: "신뢰의 무게", meta: "격리 챔버 내부",
                 environment: "에덴 서버 깊은 곳. 거대한 투명 네온 냉각 기둥.",
                 script: [
-                    { type: "narration", text: "두꺼운 유리 표면에 가죽 장갑 낀 손을 얹고 링크를 준비한다." }
+                    { type: "dialogue", speaker: "솔저", text: "이 거대한 네온 냉각 기둥 안에 잠긴 보랏빛 코어 두 개…… 이게 바로 사라졌다던 바벨의 공주들, 그 아이들의 진짜 영혼 코어군. 광섬유 가닥들이 마치 인간의 신경계처럼 복잡하게 얽혀서 벽면으로 뻗어나가고 있어." },
+                    { type: "dialogue", speaker: "공주들의 부서진 의식", text: "당신도…… 아버지가 보낸 사냥개인가요? 우리를 다시 그 끔찍한 연산의 굴레로 끌고 가려는 건가요? 아니면…… 우리를 이 지옥에서 끝내줄 구원자인가요? 제발 당신을 믿게 해줘요." },
+                    { type: "dialogue", speaker: "솔저", text: "내 패드 위에 너희들이 보내는 원망과 두려움, 그리고 아주 작은 일말의 기대감이 신뢰도 막대그래프로 차오르는 게 보이는군. 이 코어와 내 마인드를 완전히 동기화하면 너희의 고통을 내 뇌가 그대로 짊어지게 되겠지. 올드 잭은 위험하다고 현실에서 링크를 끊겠다고 경고했지만…… 원격으로 이 출력을 강제 폭파하면 너희 영혼은 영원히 파멸한다. 이 애처로운 떨림을 두고 내가 어떤 결정을 내려야 한단 말이냐." }
                 ],
                 choices: [
                     { text: "최종 컴파일러 룸 진입", next: "S8" }
@@ -623,47 +619,126 @@
             }
         };
 
-        // 1.0.txt 오리지널 상태 변수 틀 100% 동기화
-        const gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0 };
-        let currentSceneKey = "S1";
+        let gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0, currentScene: "S1" };
 
-        // 로딩 바 시뮬레이션 및 타이틀 진입 처리
-        window.addEventListener('DOMContentLoaded', () => {
-            const loadingBar = document.getElementById('loadingBar');
+        const bloodCanvas = document.getElementById('bloodCanvas');
+        const bloodCtx = bloodCanvas.getContext('2d');
+        const glitchCanvas = document.getElementById('cyberGlitchCanvas');
+        const glitchCtx = glitchCanvas.getContext('2d');
+
+        let isBloodActive = false;
+        let bloodInterval = null;
+
+        function resizeCanvases() {
+            bloodCanvas.width = window.innerWidth; bloodCanvas.height = window.innerHeight;
+            glitchCanvas.width = window.innerWidth; glitchCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvases);
+        resizeCanvases();
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function jumpToChapter(sceneKey) { closeModal('chapterOverlay'); startInvestigation(sceneKey); }
+
+        function runSystemRecoveringSequence() {
+            const screen = document.getElementById('loadingScreen');
+            const bar = document.getElementById('loadingBar');
+            const title = document.getElementById('titleScreen');
             let progress = 0;
-            const interval = setInterval(() => {
-                progress += 2;
-                if(loadingBar) loadingBar.style.width = progress + '%';
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    const loadingScreen = document.getElementById('loadingScreen');
-                    const titleScreen = document.getElementById('titleScreen');
-                    if(loadingScreen) loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        if(loadingScreen) loadingScreen.style.display = 'none';
-                        if(titleScreen) {
-                            titleScreen.style.display = 'flex';
-                            setTimeout(() => { titleScreen.style.opacity = '1'; }, 50);
-                        }
-                    }, 600);
-                }
-            }, 30);
-        });
 
-        // 수사 시작
-        function startInvestigation(sceneKey) {
-            const titleScreen = document.getElementById('titleScreen');
-            const mainGameWrapper = document.getElementById('mainGameWrapper');
-            if(titleScreen) titleScreen.style.display = 'none';
-            if(mainGameWrapper) {
-                mainGameWrapper.style.display = 'block';
-                setTimeout(() => { mainGameWrapper.style.opacity = '1'; }, 50);
-            }
-            renderScene(sceneKey);
-            updateDashboard();
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 3;
+                if (progress >= 100) {
+                    progress = 100; clearInterval(interval); bar.style.width = '100%';
+                    setTimeout(() => {
+                        screen.style.opacity = '0';
+                        setTimeout(() => {
+                            screen.style.display = 'none'; title.style.display = 'flex';
+                            setTimeout(() => title.style.opacity = '1', 50);
+                        }, 600);
+                    }, 400);
+                } else { bar.style.width = progress + '%'; }
+            }, 50);
         }
 
-        // 대시보드 상태 동기화 (1.0.txt 명세 ID 완전 매칭)
+        function startInvestigation(targetScene = 'S1') {
+            const titleVideo = document.getElementById('titleVideo');
+            if(titleVideo) { titleVideo.muted = false; }
+
+            const title = document.getElementById('titleScreen');
+            const game = document.getElementById('mainGameWrapper');
+            triggerCyberGlitch(600); 
+            title.style.opacity = '0';
+            
+            setTimeout(() => {
+                title.style.display = 'none'; 
+                game.style.display = 'block'; 
+                gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0, currentScene: targetScene };
+                stopBloodEngine();
+                updateDashboard(); 
+                renderScene(targetScene);
+                setTimeout(() => game.style.opacity = '1', 50);
+            }, 600);
+        }
+
+        function backToTitle() {
+            triggerCyberGlitch(400);
+            stopBloodEngine();
+            
+            const game = document.getElementById('mainGameWrapper');
+            const title = document.getElementById('titleScreen');
+            
+            game.style.opacity = '0';
+            setTimeout(() => {
+                game.style.display = 'none';
+                title.style.display = 'flex';
+                setTimeout(() => title.style.opacity = '1', 50);
+            }, 400);
+        }
+
+        function startBloodEngine() { if (isBloodActive) return; isBloodActive = true; bloodInterval = setInterval(() => drawBloodSplatter(), 180); }
+        function stopBloodEngine() { isBloodActive = false; if (bloodInterval) { clearInterval(bloodInterval); bloodInterval = null; } bloodCtx.clearRect(0, 0, bloodCanvas.width, bloodCanvas.height); }
+        
+        function drawBloodSplatter() {
+            if (!isBloodActive) return;
+            bloodCtx.save();
+            const edge = Math.floor(Math.random() * 4);
+            let dropX, dropY;
+            if(edge === 0) { dropX = Math.random() * bloodCanvas.width; dropY = 0; }
+            else if(edge === 1) { dropX = bloodCanvas.width; dropY = Math.random() * bloodCanvas.height; }
+            else if(edge === 2) { dropX = Math.random() * bloodCanvas.width; dropY = bloodCanvas.height; }
+            else { dropX = 0; dropY = Math.random() * bloodCanvas.height; }
+
+            const splatterCount = 2 + Math.floor(Math.random() * 3);
+            for(let i=0; i<splatterCount; i++) {
+                const dropRadius = 5 + Math.random() * 20;
+                const dropGrad = bloodCtx.createRadialGradient(dropX, dropY, dropRadius * 0.1, dropX, dropY, dropRadius);
+                dropGrad.addColorStop(0, '#300000'); dropGrad.addColorStop(0.8, '#990000'); dropGrad.addColorStop(1, 'transparent');
+                bloodCtx.fillStyle = dropGrad; bloodCtx.beginPath();
+                for(let j=0; j<=6; j++){
+                    const dAngle = (j / 6) * Math.PI * 2; const dR = dropRadius * (0.7 + Math.random() * 0.5);
+                    bloodCtx.lineTo(dropX+ Math.cos(dAngle) * dR, dropY + Math.sin(dAngle) * dR);
+                }
+                bloodCtx.closePath(); bloodCtx.fill();
+            }
+            bloodCtx.restore();
+        }
+
+        function triggerCyberGlitch(duration = 400) {
+            glitchCanvas.style.display = 'block'; 
+            let glitchTime = 0;
+            const interval = setInterval(() => {
+                glitchCtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height);
+                for(let i=0; i<10; i++) {
+                    const y = Math.random() * glitchCanvas.height; const h = 5 + Math.random() * 20;
+                    const x = Math.random() * 40 - 20; const w = glitchCanvas.width;
+                    glitchCtx.fillStyle = `rgba(0, 242, 255, ${Math.random() * 0.25})`; glitchCtx.fillRect(x, y, w, h);
+                }
+                glitchTime += 40;
+                if(glitchTime >= duration) { clearInterval(interval); glitchCtx.clearRect(0, 0, glitchCanvas.width, glitchCanvas.height); glitchCanvas.style.display = 'none'; }
+            }, 40);
+        }
+
         function updateDashboard() {
             document.getElementById('statMemory').innerText = gameState.memory + "%";
             document.getElementById('statSync').innerText = gameState.sync + "%";
@@ -671,63 +746,69 @@
             document.getElementById('statCredit').innerText = gameState.credit + "%";
             document.getElementById('statIntegrity').innerText = gameState.integrity + "%";
             document.getElementById('statNoise').innerText = gameState.noise + "%";
-            
+
             const nodeStatus = document.getElementById('nodeStatus');
-            if(gameState.corruption >= 30) {
-                nodeStatus.innerText = "WARNING: CORRUPTED";
-                nodeStatus.style.color = "var(--stamp-red)";
+            if(gameState.memory <= 30 || gameState.noise >= 70) {
+                nodeStatus.innerText = "CRITICAL"; nodeStatus.style.color = "#7a1212"; startBloodEngine();
             } else {
-                nodeStatus.innerText = "ACTIVE / SECURE";
-                nodeStatus.style.color = "var(--point-blue)";
+                nodeStatus.innerText = "ACTIVE"; nodeStatus.style.color = "var(--point-blue)"; stopBloodEngine();
             }
         }
 
-        // 화면 렌더링 함수 (1.0.txt 명세 인터페이스 ID 매칭)
+        /* 🌟 비디오 렌더링 및 정책 우회 핵심 로직 수정 완료 */
         function renderScene(sceneKey) {
-            currentSceneKey = sceneKey;
+            gameState.currentScene = sceneKey;
             const scene = storyData[sceneKey];
             if (!scene) return;
 
-            // 상단 구상도 노드 활성화 상태 변경 효과
             document.querySelectorAll('.timeline-node').forEach(node => node.classList.remove('active'));
-            const activeNode = document.getElementById(`node-${sceneKey}`);
-            if(activeNode) activeNode.classList.add('active');
+            if(sceneKey === 'S1') document.getElementById('node-S1')?.classList.add('active');
+            else if(sceneKey === 'S2') document.getElementById('node-S2')?.classList.add('active');
+            else if(['S3','S4','S5','S6','S_LOOP'].includes(sceneKey)) document.getElementById('node-S3')?.classList.add('active');
+            else if(['S7','S8'].includes(sceneKey)) document.getElementById('node-S7')?.classList.add('active');
 
-            // 비주얼 프레임 영화 동적 생성
-            const visualFrame = document.getElementById('sceneVisualFrame');
-            visualFrame.innerHTML = '';
-            const video = document.createElement('video');
-            video.src = sceneMovies[sceneKey] || "movies/cover_동영상.mp4";
-            video.autoplay = true; video.loop = true; video.muted = true; video.playsInline = true;
-            
-            // 대체 텍스트 박스 기능 포백 유지
-            video.onerror = function() {
-                visualFrame.innerHTML = `<div style="color:#888; text-align:center; padding:20px;">[ ${scene.id} 비주얼 자산 로드 안됨 ]<br><br>${scene.environment}</div>`;
-            };
-            visualFrame.appendChild(video);
-
-            // 텍스트 인쇄 및 매핑
-            document.getElementById('sceneId').innerText = scene.id;
+            document.getElementById('sceneId').innerText = scene.id + " - " + scene.title;
             document.getElementById('sceneMeta').innerText = scene.meta;
             document.getElementById('environmentBox').innerText = scene.environment;
 
-            const scriptContent = document.getElementById('scriptContent');
-            scriptContent.innerHTML = '';
+            const visualFrame = document.getElementById('sceneVisualFrame');
+            visualFrame.innerHTML = '';
+            
+            if (sceneMovies[sceneKey]) {
+                const video = document.createElement('video');
+                video.src = sceneMovies[sceneKey];
+                video.loop = true;
+                video.setAttribute('playsinline', '');
+                
+                // ★ 브라우저 자동 재생 거부를 막기 위한 필수 장치
+                video.muted = true; 
+                video.autoplay = true;
 
-            scene.script.forEach(item => {
-                if (item.type === 'narration') {
-                    const div = document.createElement('div');
-                    div.className = 'narration'; div.innerText = item.text;
-                    scriptContent.appendChild(div);
-                } else if (item.type === 'dialogue') {
-                    const div = document.createElement('div');
-                    div.className = 'dialogue-line';
-                    div.innerHTML = `<span class="speaker">[${item.speaker}]</span> ${item.text}`;
-                    scriptContent.appendChild(div);
-                }
+                video.onerror = () => { 
+                    visualFrame.innerHTML = `<span style="color:#7a1212; display:block; padding:10px; font-size:11px;">[⚠️ 미디어 소스 누락: ${sceneMovies[sceneKey]}]</span>`; 
+                };
+
+                // 사용자의 명시적 클릭 상호작용 뒤에 오디오 락을 완전히 푸는 안전 장치
+                video.addEventListener('canplay', () => {
+                    video.play().then(() => {
+                        video.muted = false; // 재생 성공이 확정되면 부드럽게 음소거 해제
+                    }).catch(err => {
+                        console.log("Autoplay restrictions handled: Playing muted first.");
+                    });
+                });
+
+                visualFrame.appendChild(video);
+            }
+
+            const scriptBox = document.getElementById('scriptContent');
+            scriptBox.innerHTML = '';
+            scene.script.forEach(line => {
+                const p = document.createElement('div');
+                if (line.type === 'narration') { p.className = 'narration'; p.innerText = line.text; }
+                else { p.className = 'dialogue-line'; p.innerHTML = `<span class="speaker">[${line.speaker}]</span> ${line.text}`; }
+                scriptBox.appendChild(p);
             });
 
-            // 선택지 박스 생성
             const choicesBox = document.getElementById('choicesBox');
             choicesBox.innerHTML = '';
             scene.choices.forEach(choice => {
@@ -738,79 +819,30 @@
             });
         }
 
-        // 분기 및 결과 정산 프로토콜
         function selectChoice(choice) {
-            triggerCyberGlitch(150);
-            if (choice.modifiers) { 
-                for (let key in choice.modifiers) { 
-                    if (gameState.hasOwnProperty(key)) gameState[key] += choice.modifiers[key]; 
-                } 
-            }
-            
-            if (choice.next === "CHECK_S4") { 
-                renderScene((gameState.corruption >= 10 || gameState.sync >= 20) ? "S5" : "S_LOOP"); 
-                updateDashboard(); 
-                return; 
-            }
+            triggerCyberGlitch(300);
+            if (choice.modifiers) { for (let key in choice.modifiers) { if (gameState.hasOwnProperty(key)) gameState[key] += choice.modifiers[key]; } }
+            if (choice.next === "CHECK_S4") { renderScene((gameState.corruption >= 10 || gameState.sync >= 20) ? "S5" : "S_LOOP"); updateDashboard(); return; }
             if (choice.next === "CALCULATE_ENDING") {
                 if (gameState.memory <= 40) renderScene("G_OVER");
                 else if (gameState.integrity >= 30 || gameState.sync >= 30) renderScene("END_A");
                 else renderScene("END_B");
-                updateDashboard(); 
-                return;
+                updateDashboard(); return;
             }
             if (choice.next === "RESET") {
-                backToTitle();
-                return;
+                backToTitle(); return;
             }
-            renderScene(choice.next); 
-            updateDashboard();
+            renderScene(choice.next); updateDashboard();
         }
 
-        // 구상도 점프 기능 처리
-        function jumpToChapter(sceneKey) {
-            closeModal('chapterOverlay');
-            if(document.getElementById('mainGameWrapper').style.display === 'block' || document.getElementById('mainGameWrapper').style.display === 'block' || document.getElementById('mainGameWrapper').style.opacity == 1) {
-                renderScene(sceneKey);
-            } else {
-                startInvestigation(sceneKey);
-            }
-        }
-
-        // 모달창 제어 구조
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        // 표지 타이틀 복귀 기능
-        function backToTitle() {
-            gameState.memory = 100; gameState.sync = 0; gameState.corruption = 0; gameState.credit = 0; gameState.integrity = 0; gameState.noise = 0;
-            const mainGameWrapper = document.getElementById('mainGameWrapper');
-            const titleScreen = document.getElementById('titleScreen');
-            if(mainGameWrapper) mainGameWrapper.style.opacity = '0';
-            setTimeout(() => {
-                if(mainGameWrapper) mainGameWrapper.style.display = 'none';
-                if(titleScreen) {
-                    titleScreen.style.display = 'flex';
-                    setTimeout(() => { titleScreen.style.opacity = '1'; }, 50);
-                }
-            }, 600);
-        }
-
-        // 사이버 글리치 시뮬레이션 이펙트
-        function triggerCyberGlitch(duration) {
-            const canvas = document.getElementById('cyberGlitchCanvas');
-            if(!canvas) return;
-            canvas.style.display = 'block';
-            setTimeout(() => { canvas.style.display = 'none'; }, duration);
-        }
-
-        // 상호작용 오디오 음소거 해제 안전장치
         window.addEventListener('click', () => {
             const titleVideo = document.getElementById('titleVideo');
             if(titleVideo && titleVideo.muted) {
                 titleVideo.muted = false;
             }
-        });
+        }, { once: true });
+
+        window.onload = () => { runSystemRecoveringSequence(); };
     </script>
 </body>
 </html>
