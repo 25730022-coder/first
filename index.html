@@ -256,9 +256,9 @@
             overflow: hidden;
         }
 
-        /* 비주얼 가로 65% */
+        /* 비주얼 가로 67% */
         .left-visual-stage {
-            flex: 6.5;
+            flex: 6.7;
             height: 100%;
             position: relative;
             background-color: #000000; 
@@ -287,9 +287,9 @@
             display: block;
         }
 
-        /* 텍스트창 가로 35% */
+        /* 텍스트창 가로 33% */
         .right-interface-stage {
-            flex: 3.5;
+            flex: 3.3;
             height: 100%;
             box-sizing: border-box;
             display: flex;
@@ -695,7 +695,7 @@
             visualFrame.innerHTML = '';
             const video = document.createElement('video');
             video.src = sceneMovies[sceneKey] || "movies/cover_동영상.mp4";
-            video.autoplay = true; video.loop = true; video.muted = true; video.playsInline = true;
+           video.autoplay = true; video.loop = true; video.muted = false; video.playsInline = true; // 소리 켜기!
             
             video.onerror = function() {
                 visualFrame.innerHTML = `<div style="color:#888; text-align:center; padding:20px; font-size:12px;">[ ${scene.id} 비주얼 재생 대기 ]<br><br>${scene.environment}</div>`;
