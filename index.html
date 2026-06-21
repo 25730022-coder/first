@@ -32,6 +32,38 @@
         }
 
         /* ==========================================
+           [0단계] 오디오 활성화를 위한 필수 첫 클릭 스크린
+        ========================================== */
+        #gateScreen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #000000;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .gate-btn {
+            background: none;
+            border: 1px solid var(--point-blue);
+            color: var(--point-blue);
+            padding: 15px 40px;
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 16px;
+            letter-spacing: 4px;
+            cursor: pointer;
+            box-shadow: var(--neon-glow);
+            transition: all 0.3s ease;
+        }
+        .gate-btn:hover {
+            background-color: var(--point-blue);
+            color: #000;
+            box-shadow: 0 0 25px var(--point-blue);
+        }
+
+        /* ==========================================
            [1단계] 로딩 스크린
         ========================================== */
         #loadingScreen {
@@ -40,7 +72,7 @@
             width: 100vw; height: 100vh;
             background-color: #000000;
             z-index: 10000;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -336,7 +368,6 @@
         .stat-value { font-family: monospace; font-size: 12px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
-        /* 오디오 활성화 강제 유도 버튼 */
         .audio-unmute-btn {
             background: #7a1212;
             color: #fff;
@@ -381,6 +412,11 @@
 </head>
 <body>
 
+    <!-- [0단계] 브라우저 보안 우회를 위한 대문 게이트 (무조건 한 번 누르고 시작함) -->
+    <div id="gateScreen">
+        <button class="gate-btn" onclick="initiateGameSystem()">[ SYSTEM CONNECT ]</button>
+    </div>
+
     <!-- [1단계] 로딩 스크린 -->
     <div id="loadingScreen">
         <div class="loading-text">S Y S T E M   R E C O V E R I N G</div>
@@ -391,8 +427,8 @@
 
     <!-- [2단계] 게임 타이틀 표지 -->
     <div id="titleScreen">
-        <!-- 메인 커버 영상은 안전하게 음소거 기본 유지 -->
-        <video id="titleVideo" class="title-video-bg" autoplay loop muted playsinline>
+        <!-- 이제 게이트 클릭 덕분에 음소거를 완전히 풀고(muted 제거) 소리 재생이 가능합니다 -->
+        <video id="titleVideo" class="title-video-bg" loop playsinline>
             <source src="movies/cover_동영상.mp4" type="video/mp4">
         </video>
         
@@ -486,7 +522,6 @@
                         <span class="stat-label">Node System</span>
                         <span id="nodeStatus" class="stat-value neon-glow">STANDBY</span>
                     </div>
-                    <!-- 🔊 소리 안들릴 때 해결해줄 수 있는 안전장치 인터랙션 버튼 추가 -->
                     <button class="audio-unmute-btn" onclick="forceUnmuteVideo()">🔊 사운드 강제 켜기</button>
                 </div>
                 <div class="text-content-wrapper">
@@ -536,7 +571,7 @@
                 id: "🎬 챕터 1", title: "하층 지구로의 추락", meta: "구룡 지구 골목", 
                 environment: "수직 하강하는 고속 리프트 안. 매연 및 네온사인이 가득한 하층 구역.", 
                 script: [ 
-                    { type: "narration", text: "상층부의 산소 포화도가 급격히 떨어지자, 솔저는 해진 가죽 코트 깃을 턱끝까지 올린다. 급격한 기압차와 고도 저하 때문에 전두엽 안쪽에서 바늘로 찌르는 듯한 가벼운 현기증과 이명이 발생한다. 블루빛 인터페이스가 깜빡이며 경고를 보낸다." }, 
+                    { type: "narration", text: "상층부의 산소 포화도가 급격히 떨어지자, 솔저는 해진 가죽 코트 깃을 턱끝까지 올린다. 급격한 기압차와 고도 저하 때문에 전두엽 안쪽에서 바늘로 찌르는 듯한 가벼운 현기증และ 이명이 발생한다. 블루빛 인터페이스가 깜빡이며 경고를 보낸다." }, 
                     { type: "dialogue", speaker: "솔저", text: "리프트가 아래로 처박힐 때마다 차가운 매연 냄새가 진동을 하는군." } 
                 ], 
                 choices: [ 
@@ -650,7 +685,52 @@
         const gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0 };
         let currentSceneKey = "S1";
 
+        /* 사용자가 첫 관문 버튼([ SYSTEM CONNECT ])을 누를 때 호출되는 함수 */
+        function initiateGameSystem() {
+            // 이 시점에 첫 상호작용이 성립되어 브라우저의 전역 오디오 락이 해제됩니다.
+            document.getElementById('gateScreen').style.display = 'none';
+            
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen) loadingScreen.style.display = 'flex';
+
+            // 가짜 프로그레스 바 실행
+            setTimeout(() => {
+                const loadingBar = document.getElementById('loadingBar');
+                let progress = 0;
+                
+                const interval = setInterval(() => {
+                    progress += 2;
+                    if (loadingBar) loadingBar.style.width = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        
+                        if (loadingScreen) loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            if (loadingScreen) loadingScreen.style.display = 'none';
+                            
+                            // 표지 화면 표시 및 비디오 사운드와 함께 재생 시작!
+                            const titleScreen = document.getElementById('titleScreen');
+                            const titleVideo = document.getElementById('titleVideo');
+                            if (titleScreen) {
+                                titleScreen.style.display = 'flex';
+                                setTimeout(() => { titleScreen.style.opacity = '1'; }, 50);
+                            }
+                            if (titleVideo) {
+                                titleVideo.muted = false; // 소리 켜기
+                                titleVideo.play().catch(e => console.log("표지 오디오 재생 오류 방어:", e));
+                            }
+                        }, 600);
+                    }
+                }, 20);
+            }, 100);
+        }
+
         function startInvestigation(sceneKey) {
+            // 표지 비디오 정지
+            const titleVideo = document.getElementById('titleVideo');
+            if (titleVideo) titleVideo.pause();
+
             const titleScreen = document.getElementById('titleScreen');
             const mainGameWrapper = document.getElementById('mainGameWrapper');
             if(titleScreen) titleScreen.style.display = 'none';
@@ -697,17 +777,14 @@
             video.src = sceneMovies[sceneKey] || "movies/cover_동영상.mp4";
             video.autoplay = true; 
             video.loop = true; 
-            video.muted = false; // 기본 사운드 켜기 설정
+            video.muted = false; 
             video.playsInline = true; 
             
-            // [브라우저 자동재생 차단 예외 처리 완벽 반영]
-            // 사용자가 클릭해서 진입했더라도, 자동 전환 분기나 미세 시간차 때문에 
-            // 브라우저가 오디오 스트림 재생을 일시 거절할 때 에러가 나거나 멈추지 않게 방어합니다.
             const playPromise = video.play();
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.log("브라우저 차단 감지: 무음 재생 후 대기");
-                    video.muted = true; // 우선 무음으로 재생시켜 렌더링 유지
+                    console.log("자동 재생 거부 보완책 작동: 우선 무음 처리");
+                    video.muted = true;
                     video.play();
                 });
             }
@@ -747,12 +824,10 @@
             });
         }
 
-        // 사용자가 오디오 켜기 버튼을 누르거나 클릭했을 때 사운드를 완벽 활성화해주는 제어 함수
         function forceUnmuteVideo() {
             const video = document.getElementById('activeInGameVideo');
             if (video) {
                 video.muted = false;
-                // 사용자 직접 클릭 기반이므로 무조건 소리가 켜지며 재생됩니다.
                 video.play().catch(e => console.log(e)); 
             }
         }
@@ -808,6 +883,11 @@
                     titleScreen.style.display = 'flex';
                     setTimeout(() => { titleScreen.style.opacity = '1'; }, 50);
                 }
+                const titleVideo = document.getElementById('titleVideo');
+                if (titleVideo) {
+                    titleVideo.muted = false;
+                    titleVideo.play().catch(e => console.log(e));
+                }
             }, 600);
         }
 
@@ -828,35 +908,6 @@
                 canvas.style.display = 'none'; 
             }, duration);
         }
-    
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loadingBar = document.getElementById('loadingBar');
-                let progress = 0;
-                
-                const interval = setInterval(() => {
-                    progress += 2;
-                    if (loadingBar) {
-                        loadingBar.style.width = progress + '%';
-                    }
-                    
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        const loadingScreen = document.getElementById('loadingScreen');
-                        const titleScreen = document.getElementById('titleScreen');
-                        
-                        if (loadingScreen) loadingScreen.style.opacity = '0';
-                        setTimeout(() => {
-                            if (loadingScreen) loadingScreen.style.display = 'none';
-                            if (titleScreen) {
-                                titleScreen.style.display = 'flex';
-                                setTimeout(() => { titleScreen.style.opacity = '1'; }, 50);
-                            }
-                        }, 600);
-                    }
-                }, 20);
-            }, 100);
-        });
     </script>
 </body>
 </html>
