@@ -614,7 +614,7 @@
                 environment: "에덴 아일랜드 최고층 펜트하우스인공적으로 설계된 따스한 금빛 노을이 통유리창으로 끝없이 쏟아지는 초호화 테라스. 완벽한 풍요와 완벽한 고독.",
                 script: [
                     { type: "dialogue", speaker: "솔저", text: "내가 무엇을 수사했는지 전혀 기억나지 않아. 그런데 잔 속 얼음 소리가 왜 이렇게 슬프지." }
-                ],
+                ], 
                 choices: [{ text: "낙원에 안주하기", next: "RESET" }]
             },
             G_OVER: {
@@ -622,10 +622,9 @@
                 environment: "바벨 코프 지하 9층 서버실 복도가상 인격과 인간성을 완벽하게 박탈당한 채, 중장갑 티타늄 장갑포와 안구 레이저 센서로 개조되어 오직 기계 냉각음만 흐르는 통제 구역.",
                 script: [
                     { type: "dialogue", speaker: "솔저", text: "포맷 완료. 나는 이제 하위 제어용 부품일 뿐. 침입 개체 탐지 중." }
-                ],
+                ], 
                 choices: [{ text: "다시 증명하기", next: "RESET" }]
             }
-        };
 
         const gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0 };
         let currentSceneKey = "S1";
