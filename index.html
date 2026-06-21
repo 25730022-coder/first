@@ -790,8 +790,19 @@
         function triggerCyberGlitch(duration) {
             const canvas = document.getElementById('cyberGlitchCanvas');
             if(!canvas) return;
+            
             canvas.style.display = 'block';
-            setTimeout(() => { canvas.style.display = 'none'; }, duration);
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                ctx.fillStyle = 'rgba(0, 242, 255, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            setTimeout(() => { 
+                canvas.style.display = 'none'; 
+            }, duration);
         }
     
         // 브라우저 정책용 인터랙션 안전장치
