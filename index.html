@@ -807,8 +807,8 @@
     
         // 브라우저 정책용 인터랙션 안전장치
         // 💡 [수정 완료] 브라우저 렌더링 엔진에 우선권을 주어 0% 멈춤 현상 완전 해결
-        window.addEventListener('load', () => {
-            // 브라우저가 화면을 그릴 준비가 될 때까지 100ms 대기 후 로딩 시작
+     window.addEventListener('load', () => {
+            // 브라우저가 무거운 리소스를 다 처리하고 화면을 그릴 준비가 될 때까지 100ms 숨통을 틔워줌
             setTimeout(() => {
                 const loadingBar = document.getElementById('loadingBar');
                 let progress = 0;
@@ -833,9 +833,9 @@
                             }
                         }, 600);
                     }
-                }, 20);
+                }, 20); // 20ms 간격으로 부드럽게 상승
             }, 100);
-        });
+        })
     </script>
 </body>
 </html>
