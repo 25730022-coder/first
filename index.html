@@ -32,7 +32,7 @@
         }
 
         /* ==========================================
-           [0단계] 오디오 락 해제를 위한 게이트 스크린
+           [0단계] 브라우저 오디오 제한 우회 게이트
         ========================================== */
         #gateScreen {
             position: fixed;
@@ -368,24 +368,6 @@
         .stat-value { font-family: monospace; font-size: 12px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
-        .audio-unmute-btn {
-            background: #7a1212;
-            color: #fff;
-            border: none;
-            padding: 6px;
-            font-size: 11px;
-            font-family: 'Nanum Myeongjo', serif;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 2px;
-            transition: background 0.2s;
-            margin-top: 4px;
-            display: block;
-        }
-        .audio-unmute-btn:hover {
-            background: #a11b1b;
-        }
-
         .text-content-wrapper {
             flex-grow: 1;
             display: flex;
@@ -412,12 +394,10 @@
 </head>
 <body>
 
-    <!-- [0단계] 브라우저 오디오 제한 우회 게이트 -->
     <div id="gateScreen">
         <button class="gate-btn" onclick="initiateGameSystem()">[ SYSTEM CONNECT ]</button>
     </div>
 
-    <!-- [1단계] 로딩 스크린 -->
     <div id="loadingScreen">
         <div class="loading-text">S Y S T E M   R E C O V E R I N G</div>
         <div class="loading-bar-container">
@@ -425,9 +405,7 @@
         </div>
     </div>
 
-    <!-- [2단계] 게임 타이틀 표지 -->
     <div id="titleScreen">
-        <!-- 오디오 제한을 뚫었으므로 이제 autoplay 프로퍼티와 소리가 완전히 살아난 상태로 구동됩니다 -->
         <video id="titleVideo" class="title-video-bg" loop playsinline autoplay>
             <source src="movies/cover_동영상.mp4" type="video/mp4">
         </video>
@@ -453,7 +431,6 @@
         </div>
     </div>
 
-    <!-- 모달창 영역 -->
     <div id="prologueOverlay" class="custom-overlay" onclick="closeModal('prologueOverlay')">
         <div class="paper-modal-box" onclick="event.stopPropagation()">
             <div class="modal-main-title">[사건 분석 서막]</div>
@@ -499,7 +476,6 @@
     <canvas id="bloodCanvas"></canvas>
     <canvas id="cyberGlitchCanvas"></canvas>
 
-    <!-- [3단계] 인게임 인터페이스 화면 -->
     <div id="mainGameWrapper">
         <div class="game-container">
             <div class="left-visual-stage">
@@ -522,7 +498,6 @@
                         <span class="stat-label">Node System</span>
                         <span id="nodeStatus" class="stat-value neon-glow">STANDBY</span>
                     </div>
-                    <button class="audio-unmute-btn" onclick="forceUnmuteVideo()">🔊 사운드 강제 켜기</button>
                 </div>
                 <div class="text-content-wrapper">
                     <div class="scene-header">
@@ -581,7 +556,7 @@
             }, 
             S3: { 
                 id: "🎬 챕터 2", title: "구룡 지구의 조력자", meta: "올드 잭의 정비소", 
-                environment: "지하 통로 끝 안가. 해체된 드론과 기판들이 어지럽게 널려있고 더미 속에서, 올드 잭이 기름 절은 낡은 의자에 깊숙이 기대어 앉아있다. 매서운 눈빛으로 노려본다.", 
+                environment: "지하 통로 끝 안가. 해체된 드론และ 기판들이 어지럽게 널려있고 더미 속에서, 올드 잭이 기름 절은 낡은 의자에 깊숙이 기대어 앉아있다. 매서운 눈빛으로 노려본다.", 
                 script: [ 
                     { type: "narration", text: "올드 잭이 낡은 의자에 기대어 다가오는 솔저를 노려본다." }, 
                     { type: "dialogue", speaker: "올드 잭", text: "내 장비를 빌려주는 대가로 넌 내게 뭘 줄 건가?" } 
@@ -685,9 +660,7 @@
         const gameState = { memory: 100, sync: 0, corruption: 0, credit: 0, integrity: 0, noise: 0 };
         let currentSceneKey = "S1";
 
-        /* 유저가 게이트 버튼을 클릭 시 수행되는 초기화 스크립트 */
         function initiateGameSystem() {
-            // 이 동작을 기점으로 사운드가 완전히 잠금해제됩니다.
             document.getElementById('gateScreen').style.display = 'none';
             
             const loadingScreen = document.getElementById('loadingScreen');
@@ -708,7 +681,6 @@
                         setTimeout(() => {
                             if (loadingScreen) loadingScreen.style.display = 'none';
                             
-                            // 표지 컴포넌트 렌더링
                             const titleScreen = document.getElementById('titleScreen');
                             const titleVideo = document.getElementById('titleVideo');
                             if (titleScreen) {
@@ -716,10 +688,9 @@
                                 setTimeout(() => { titleScreen.style.opacity = '1'; }, 50);
                             }
                             
-                            // [핵심 변경] 표지 비디오의 음소거를 확실히 풀고 재생 명령 작동
                             if (titleVideo) {
                                 titleVideo.muted = false; 
-                                titleVideo.currentTime = 0; // 처음부터 재생
+                                titleVideo.currentTime = 0; 
                                 titleVideo.play().catch(e => {
                                     console.log("표지 비디오 오디오 재생 방어 로그:", e);
                                 });
@@ -731,7 +702,6 @@
         }
 
         function startInvestigation(sceneKey) {
-            // 표지에 도달했던 사운드 트랙 일시정지 처리
             const titleVideo = document.getElementById('titleVideo');
             if (titleVideo) titleVideo.pause();
 
@@ -826,14 +796,6 @@
                 btn.onclick = () => selectChoice(choice);
                 choicesBox.appendChild(btn);
             });
-        }
-
-        function forceUnmuteVideo() {
-            const video = document.getElementById('activeInGameVideo');
-            if (video) {
-                video.muted = false;
-                video.play().catch(e => console.log(e)); 
-            }
         }
 
         function selectChoice(choice) {
