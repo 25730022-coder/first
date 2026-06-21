@@ -806,11 +806,35 @@
         }
     
         // 브라우저 정책용 인터랙션 안전장치
-        window.addEventListener('click', () => {
-            const titleVideo = document.getElementById('titleVideo');
-            if(titleVideo && titleVideo.muted) {
-                titleVideo.muted = false;
-            }
+        // 💡 [수정 완료] 브라우저 렌더링 엔진에 우선권을 주어 0% 멈춤 현상 완전 해결
+        window.addEventListener('load', () => {
+            // 브라우저가 화면을 그릴 준비가 될 때까지 100ms 대기 후 로딩 시작
+            setTimeout(() => {
+                const loadingBar = document.getElementById('loadingBar');
+                let progress = 0;
+                
+                const interval = setInterval(() => {
+                    progress += 2;
+                    if (loadingBar) {
+                        loadingBar.style.width = progress + '%';
+                    }
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        const loadingScreen = document.getElementById('loadingScreen');
+                        const titleScreen = document.getElementById('titleScreen');
+                        
+                        if (loadingScreen) loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            if (loadingScreen) loadingScreen.style.display = 'none';
+                            if (titleScreen) {
+                                titleScreen.style.display = 'flex';
+                                setTimeout(() => { titleScreen.style.opacity = '1'; }, 50);
+                            }
+                        }, 600);
+                    }
+                }, 20);
+            }, 100);
         });
     </script>
 </body>
