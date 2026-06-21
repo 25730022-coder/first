@@ -336,6 +336,25 @@
         .stat-value { font-family: monospace; font-size: 12px; font-weight: bold; color: #eee; }
         .stat-value.neon-glow { color: var(--point-blue); text-shadow: var(--neon-glow); }
 
+        /* 오디오 활성화 강제 유도 버튼 */
+        .audio-unmute-btn {
+            background: #7a1212;
+            color: #fff;
+            border: none;
+            padding: 6px;
+            font-size: 11px;
+            font-family: 'Nanum Myeongjo', serif;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 2px;
+            transition: background 0.2s;
+            margin-top: 4px;
+            display: block;
+        }
+        .audio-unmute-btn:hover {
+            background: #a11b1b;
+        }
+
         .text-content-wrapper {
             flex-grow: 1;
             display: flex;
@@ -362,6 +381,7 @@
 </head>
 <body>
 
+    <!-- [1단계] 로딩 스크린 -->
     <div id="loadingScreen">
         <div class="loading-text">S Y S T E M   R E C O V E R I N G</div>
         <div class="loading-bar-container">
@@ -369,7 +389,9 @@
         </div>
     </div>
 
+    <!-- [2단계] 게임 타이틀 표지 -->
     <div id="titleScreen">
+        <!-- 메인 커버 영상은 안전하게 음소거 기본 유지 -->
         <video id="titleVideo" class="title-video-bg" autoplay loop muted playsinline>
             <source src="movies/cover_동영상.mp4" type="video/mp4">
         </video>
@@ -395,6 +417,7 @@
         </div>
     </div>
 
+    <!-- 모달창 영역 -->
     <div id="prologueOverlay" class="custom-overlay" onclick="closeModal('prologueOverlay')">
         <div class="paper-modal-box" onclick="event.stopPropagation()">
             <div class="modal-main-title">[사건 분석 서막]</div>
@@ -440,6 +463,7 @@
     <canvas id="bloodCanvas"></canvas>
     <canvas id="cyberGlitchCanvas"></canvas>
 
+    <!-- [3단계] 인게임 인터페이스 화면 -->
     <div id="mainGameWrapper">
         <div class="game-container">
             <div class="left-visual-stage">
@@ -462,6 +486,8 @@
                         <span class="stat-label">Node System</span>
                         <span id="nodeStatus" class="stat-value neon-glow">STANDBY</span>
                     </div>
+                    <!-- 🔊 소리 안들릴 때 해결해줄 수 있는 안전장치 인터랙션 버튼 추가 -->
+                    <button class="audio-unmute-btn" onclick="forceUnmuteVideo()">🔊 사운드 강제 켜기</button>
                 </div>
                 <div class="text-content-wrapper">
                     <div class="scene-header">
@@ -497,7 +523,7 @@
                 id: "🎬 서막", title: "바벨의 그림자", meta: "바벨 코프 본사 120층", 
                 environment: "흑색 대리석 바닥, 창문에 흘러내리는 강렬한 산성비.", 
                 script: [ 
-                    { type: "narration", text: "솔저는 관자놀이에 깊숙이 박힌 티타늄 접속 단자를 가죽 장갑 낀 손으로 거칠게 쓸어내린다. 신경 변전소에서 흘러나오는 미세한 역전류가 망막을 후벼팠다. 이윽고 허공의 입자들이 찢어지며, 거대한 금색 지팡이를 짚은 바벨 회장의 초고해상도 입체 홀로그램이 오만하게 내려다본다." }, 
+                    { type: "narration", text: "솔저는 관자놀이에 깊숙이 박힌 티타늄 접속 단자가 가죽 장갑 낀 손으로 거칠게 쓸어내린다. 신경 변전소에서 흘러나오는 미세한 역전류가 망막을 후벼팠다. 이윽고 허공의 입자들이 찢어지며, 거대한 금색 지팡이를 짚은 바벨 회장의 초고해상도 입체 홀로그램이 오만하게 내려다본다." }, 
                     { type: "dialogue", speaker: "솔저", text: "용건만 말해. 대가만 분명하다면 움직인다." }, 
                     { type: "dialogue", speaker: "바벨", text: "지시만 따른다면 기억을 돌려주지. 에덴 서버의 마인드 코어인 공주들을 회수해라." } 
                 ], 
@@ -665,12 +691,26 @@
 
             const visualFrame = document.getElementById('sceneVisualFrame');
             visualFrame.innerHTML = '';
+            
             const video = document.createElement('video');
+            video.id = "activeInGameVideo";
             video.src = sceneMovies[sceneKey] || "movies/cover_동영상.mp4";
             video.autoplay = true; 
             video.loop = true; 
-            video.muted = true; // 브라우저 자동 재생 정책 우회를 위해 미디어를 기본 음소거 처리하여 무조건 재생 보장
+            video.muted = false; // 기본 사운드 켜기 설정
             video.playsInline = true; 
+            
+            // [브라우저 자동재생 차단 예외 처리 완벽 반영]
+            // 사용자가 클릭해서 진입했더라도, 자동 전환 분기나 미세 시간차 때문에 
+            // 브라우저가 오디오 스트림 재생을 일시 거절할 때 에러가 나거나 멈추지 않게 방어합니다.
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("브라우저 차단 감지: 무음 재생 후 대기");
+                    video.muted = true; // 우선 무음으로 재생시켜 렌더링 유지
+                    video.play();
+                });
+            }
             
             video.onerror = function() {
                 visualFrame.innerHTML = `<div style="color:#888; text-align:center; padding:20px; font-size:12px;">[ ${scene.id} 비주얼 재생 대기 ]<br><br>${scene.environment}</div>`;
@@ -705,6 +745,16 @@
                 btn.onclick = () => selectChoice(choice);
                 choicesBox.appendChild(btn);
             });
+        }
+
+        // 사용자가 오디오 켜기 버튼을 누르거나 클릭했을 때 사운드를 완벽 활성화해주는 제어 함수
+        function forceUnmuteVideo() {
+            const video = document.getElementById('activeInGameVideo');
+            if (video) {
+                video.muted = false;
+                // 사용자 직접 클릭 기반이므로 무조건 소리가 켜지며 재생됩니다.
+                video.play().catch(e => console.log(e)); 
+            }
         }
 
         function selectChoice(choice) {
@@ -779,7 +829,6 @@
             }, duration);
         }
     
-        // [해결 완료] 중복 로딩 구동 제거 - 오직 브라우저 리소스 로드 완결 시점에만 깔끔하게 실행되도록 통합
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loadingBar = document.getElementById('loadingBar');
